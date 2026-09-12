@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePollar } from "@pollar/react";
 import { Modal } from "@/components/ui/Modal";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { middleTruncate } from "@/lib/format";
@@ -13,6 +14,7 @@ export function AccountModal({
   onClose: () => void;
 }) {
   const { user, logout } = usePollarAuth();
+  const { openRampModal } = usePollar();
   const [copied, setCopied] = useState(false);
 
   if (!user) return null;
@@ -45,6 +47,13 @@ export function AccountModal({
             </button>
           </div>
         </div>
+
+        <button
+          onClick={() => openRampModal()}
+          className="w-full rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
+        >
+          Agregar fondos
+        </button>
 
         <button
           onClick={() => {
