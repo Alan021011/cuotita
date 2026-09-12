@@ -54,3 +54,5 @@ Sin `DATABASE_URL` configurado, la app usa SQLite local (`data/local.db`) autom�
 - **Mainnet**: pendiente de la reunión obligatoria con el equipo de Pollar para habilitar la publishable key `pub_mainnet_...`.
 - **Sin tests automatizados** todavía para `lib/claims.ts` / `lib/delegates.ts` (sí corren los 32 tests originales de la plantilla `money-pool`, sin regresiones).
 - El pago del reclamo asume que el beneficiario ya tiene o puede crear su propia wallet Pollar — no hay onboarding asistido para eso en este MVP.
+
+<!-- deploy test -->
