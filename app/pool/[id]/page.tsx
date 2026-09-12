@@ -76,7 +76,7 @@ export default function PoolPage({ params }: { params: Promise<{ id: string }> }
         <div className="flex min-w-0 items-center gap-2.5">
           <PollarLogo size={30} />
           <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
-            MOTO AUX
+            Cuotita
           </h1>
         </div>
         <LoginButton />

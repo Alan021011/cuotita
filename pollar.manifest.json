@@ -1,8 +1,8 @@
 {
-  "name": "MOTO AUX",
-  "slug": "moto-aux",
+  "name": "Cuotita",
+  "slug": "cuotita",
   "description": "Fondo de auxilio mutuo P2P para motorepartidores: aporta una cuota semanal y recibe ayuda inmediata ante un daño material.",
   "category": "savings",
   "icon": "/icon.svg",
-  "url": "https://moto-aux.vercel.app"
+  "url": "https://cuotita.vercel.app"
 }

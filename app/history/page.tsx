@@ -73,7 +73,7 @@ export default function HistoryPage() {
       <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-12">
         <div className="flex flex-col items-center gap-5 text-center">
           <PollarLogo size={104} />
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+          <h1 className="font-display text-5xl leading-tight sm:text-6xl">
             Historial
             <span className="block text-primary">Inicia sesión</span>
           </h1>

@@ -13,8 +13,13 @@ export const STELLAR_EXPERT_URL = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'm
   ? 'https://stellar.expert/explorer/public'
   : 'https://stellar.expert/explorer/testnet';
 
-/** USDC issuer on Stellar testnet */
+/** USDC issuer on Stellar testnet (Pollar's own testnet faucet issuer). */
 const USDC_ISSUER_TESTNET = 'GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5';
+/** USDC issuer on Stellar mainnet — Circle's official issuing account. */
+const USDC_ISSUER_MAINNET = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const USDC_ISSUER = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
+  ? USDC_ISSUER_MAINNET
+  : USDC_ISSUER_TESTNET;
 
 function normalizeAmount(amt: string) {
   if (!amt.includes('.')) return amt + '.0000000';
@@ -83,8 +88,8 @@ export async function verifyTxOnRPC(
     const assetCode = paymentOp.asset.isNative() ? 'native' : paymentOp.asset.getCode();
     const assetIssuer = paymentOp.asset.isNative() ? '' : paymentOp.asset.getIssuer();
 
-    if (assetCode !== 'USDC' || assetIssuer !== USDC_ISSUER_TESTNET) {
-      return { valid: false, error: `Invalid asset: expected USDC (${USDC_ISSUER_TESTNET}), got ${assetCode} (${assetIssuer || 'n/a'})` };
+    if (assetCode !== 'USDC' || assetIssuer !== USDC_ISSUER) {
+      return { valid: false, error: `Invalid asset: expected USDC (${USDC_ISSUER}), got ${assetCode} (${assetIssuer || 'n/a'})` };
     }
 
     const onChainFrom = paymentOp.source || tx.source;

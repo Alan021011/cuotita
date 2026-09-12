@@ -11,9 +11,9 @@
   --background: #ffffff;
   --foreground: #1a1a1a;
 
-  --primary: #005db4;
-  --primary-hover: #0047a0;
-  --primary-light: #f0f7ff;
+  --primary: #b45309;
+  --primary-hover: #92400e;
+  --primary-light: #fef3e2;
   --primary-foreground: #ffffff;
 
   --surface: #f8fafc;
@@ -41,8 +41,9 @@
   --mascot-shade: #cde4fa;
   --mascot-features: #0f2b46;
 
-  /* Official logo fill: brand blue on light (pollar-logo-light). */
-  --logo: var(--primary);
+  /* Official Pollar logo fill — stays Pollar's own blue regardless of our
+     --primary theming, so the "Powered by Pollar" mark stays recognizable. */
+  --logo: #005db4;
 }
 
 :root[data-theme="dark"] {
@@ -51,11 +52,10 @@
   --background: #0a0e14;
   --foreground: #eef2f6;
 
-  /* Same blue family; hover goes lighter on dark. White stays readable on both. */
-  --primary: #1668c1;
-  --primary-hover: #2f81d6;
-  --primary-light: #0e1d33;
-  --primary-foreground: #ffffff;
+  --primary: #f59e0b;
+  --primary-hover: #fbbf24;
+  --primary-light: #2a1c05;
+  --primary-foreground: #1a1200;
 
   --surface: #111823;
   --surface-hover: #18202e;
@@ -103,14 +103,74 @@
   --color-warning-light: var(--warning-light);
   --color-warning-border: var(--warning-border);
   --color-logo: var(--logo);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+  --font-display: var(--font-display);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-plex-sans), -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Big splashy headlines only (hero titles) — not the small nav/modal/card
+   h1-h3 used throughout the app, where an all-caps display face would hurt
+   legibility more than it helps branding. */
+.font-display {
+  font-family: var(--font-display), "Oswald", Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Gentle floating motion for the landing's phone mockup + its badges. */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(var(--float-rot, 0deg)); }
+  50% { transform: translateY(-14px) rotate(var(--float-rot, 0deg)); }
+}
+.float {
+  animation: float 5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .float {
+    animation: none;
+  }
+}
+
+/* The hero motorcycle: bouncing over potholes — the whole reason Cuotita
+   exists — instead of a static illustration. */
+@keyframes moto-ride {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  20% { transform: translateY(-20px) rotate(3deg); }
+  45% { transform: translateY(4px) rotate(-3deg); }
+  70% { transform: translateY(-12px) rotate(1.5deg); }
+}
+.moto-ride {
+  animation: moto-ride 2.4s ease-in-out infinite;
+}
+
+/* Dashed road line under the moto, scrolling to suggest forward motion. */
+@keyframes road-scroll {
+  from { background-position-x: 0; }
+  to { background-position-x: -56px; }
+}
+.road-line {
+  height: 3px;
+  border-radius: 999px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--primary) 0 28px,
+    transparent 28px 56px
+  );
+  animation: road-scroll 0.9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .moto-ride,
+  .road-line {
+    animation: none;
+  }
 }
 
 /*

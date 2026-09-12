@@ -1,4 +1,4 @@
-# MOTO AUX
+# Cuotita
 
 Fondo de auxilio mutuo P2P para motorepartidores (PedidosYa, Yango Delivery, etc.) en Bolivia.
 
