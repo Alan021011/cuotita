@@ -6,6 +6,8 @@ Un grupo cerrado de repartidores de una misma parada aporta una cuota periódica
 
 Construido para el Track de Pollar de la Buildathon Ethereum Bolivia (Cochabamba, 2026), sobre la plantilla [`money-pool`](https://github.com/pollar-xyz/pollar-apps/tree/main/apps/money-pool) de `pollar-apps`.
 
+**Demo pública:** [cuotita-delta.vercel.app](https://cuotita-delta.vercel.app) — corriendo en mainnet real.
+
 ## El problema
 
 Más del 80% de los trabajadores urbanos en Bolivia operan en el sector informal. Los motorepartidores no tienen seguro de accidentes ni de sus herramientas de trabajo. Un percance material común (una pantalla rota, un freno dañado) cuesta entre Bs 150 y Bs 400 y los deja sin poder trabajar 2-3 días — sin liquidez inmediata para el repuesto ni acceso a un seguro tradicional que cubra daños menores.
