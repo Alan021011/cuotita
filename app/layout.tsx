@@ -30,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
+      data-theme="dark"
       suppressHydrationWarning
       className={`${plexSans.variable} ${plexMono.variable} ${bebasNeue.variable} h-full antialiased overflow-y-scroll`}
     >

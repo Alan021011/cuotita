@@ -160,7 +160,7 @@ export default function NewPoolPage() {
               id="description"
               name="description"
               placeholder="What is this pool for?"
-              className="w-full min-h-25 rounded-xl border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 transition-shadow border-border focus:border-primary focus:ring-primary/25 resize-y"
+              className="w-full min-h-25 rounded-xl border bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 transition-shadow border-border focus:border-primary focus:ring-primary/25 resize-y"
             />
           </div>
           <div>
