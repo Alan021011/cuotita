@@ -49,32 +49,34 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --background: #0a0e14;
-  --foreground: #eef2f6;
+  /* Warm mid-gray, not black — approved palette (option C). */
+  --background: #5b574f;
+  --foreground: #f5f1ea;
 
   --primary: #f59e0b;
   --primary-hover: #fbbf24;
-  --primary-light: #2a1c05;
+  --primary-light: #6b5a3a;
   --primary-foreground: #1a1200;
 
-  --surface: #111823;
-  --surface-hover: #18202e;
-  --border: #232d3d;
+  /* Lighter than --background so cards/inputs visibly lift off the page. */
+  --surface: #726d63;
+  --surface-hover: #7d786d;
+  --border: #857f74;
 
-  --muted: #8b95a5;
-  --muted-light: #647080;
+  --muted: #d0cabe;
+  --muted-light: #a39d92;
 
   --error: #f87171;
-  --error-light: #2a1113;
-  --error-border: #542427;
+  --error-light: #6b4a45;
+  --error-border: #8a5f57;
 
   --success: #4ade80;
-  --success-light: #0c2416;
-  --success-border: #1d4a2c;
+  --success-light: #4f5a45;
+  --success-border: #647256;
 
   --warning: #fbbf24;
-  --warning-light: #291d05;
-  --warning-border: #57420f;
+  --warning-light: #6b5a3a;
+  --warning-border: #8a744a;
 
   /* Near-white on dark, matching pollar-logo-dark. */
   --logo: var(--foreground);
@@ -84,6 +86,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--surface);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-light: var(--primary-light);

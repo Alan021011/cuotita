@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { usePollar } from "@pollar/react";
+import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { middleTruncate } from "@/lib/format";
@@ -16,6 +17,7 @@ export function AccountModal({
   const { user, logout } = usePollarAuth();
   const { openRampModal } = usePollar();
   const [copied, setCopied] = useState(false);
+  const router = useRouter();
 
   if (!user) return null;
 
@@ -59,6 +61,7 @@ export function AccountModal({
           onClick={() => {
             logout();
             onClose();
+            router.push("/");
           }}
           className="w-full rounded-xl border border-error-border py-2.5 text-sm font-semibold text-error transition-colors hover:bg-error-light"
         >
