@@ -8,6 +8,8 @@ Construido para el Track de Pollar de la Buildathon Ethereum Bolivia (Cochabamba
 
 **Demo pública:** [cuotita-delta.vercel.app](https://cuotita-delta.vercel.app) — corriendo en mainnet real.
 
+**Transacción real verificada:** aporte de USDC en mainnet, confirmado — [`0db2e31a4265340aa74b4bd809e1b347e4624887cdc41a3c2a1e45fd30cc469a`](https://stellar.expert/explorer/public/tx/0db2e31a4265340aa74b4bd809e1b347e4624887cdc41a3c2a1e45fd30cc469a).
+
 ## El problema
 
 Más del 80% de los trabajadores urbanos en Bolivia operan en el sector informal. Los motorepartidores no tienen seguro de accidentes ni de sus herramientas de trabajo. Un percance material común (una pantalla rota, un freno dañado) cuesta entre Bs 150 y Bs 400 y los deja sin poder trabajar 2-3 días — sin liquidez inmediata para el repuesto ni acceso a un seguro tradicional que cubra daños menores.
@@ -51,8 +53,9 @@ Sin `DATABASE_URL` configurado, la app usa SQLite local (`data/local.db`) autom�
 ## Estado actual / limitaciones conocidas
 
 - **Custodia**: el fondo no usa un contrato de escrow — los aportes van directo a la wallet Pollar del organizador, que actúa como custodio. Es una limitación deliberada del MVP (mismo patrón usado en otros fondos comunitarios construidos con este equipo), documentada acá, no un bug.
-- **Mainnet**: pendiente de la reunión obligatoria con el equipo de Pollar para habilitar la publishable key `pub_mainnet_...`.
 - **Sin tests automatizados** todavía para `lib/claims.ts` / `lib/delegates.ts` (sí corren los 32 tests originales de la plantilla `money-pool`, sin regresiones).
 - El pago del reclamo asume que el beneficiario ya tiene o puede crear su propia wallet Pollar — no hay onboarding asistido para eso en este MVP.
 
-<!-- deploy test -->
+## Qué sigue (post-hackathon)
+
+Alianzas con mecánicos, repuesteras y vendedores de equipo de protección (cascos, guantes, chalecos) verificados — cobrando todos a través del mismo riel de Pollar, para que el fondo no solo pague el daño sino conecte directo con quien lo repara.
