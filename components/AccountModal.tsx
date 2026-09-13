@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePollar } from "@pollar/react";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
+import { SendXlmModal } from "@/components/SendXlmModal";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { middleTruncate } from "@/lib/format";
 
@@ -17,6 +18,7 @@ export function AccountModal({
   const { user, logout } = usePollarAuth();
   const { openRampModal } = usePollar();
   const [copied, setCopied] = useState(false);
+  const [sendXlmOpen, setSendXlmOpen] = useState(false);
   const router = useRouter();
 
   if (!user) return null;
@@ -58,6 +60,13 @@ export function AccountModal({
         </button>
 
         <button
+          onClick={() => setSendXlmOpen(true)}
+          className="w-full rounded-xl border border-primary/30 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
+        >
+          Enviar XLM
+        </button>
+
+        <button
           onClick={() => {
             logout();
             onClose();
@@ -68,6 +77,8 @@ export function AccountModal({
           Log out
         </button>
       </div>
+
+      <SendXlmModal open={sendXlmOpen} onClose={() => setSendXlmOpen(false)} />
     </Modal>
   );
 }
