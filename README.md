@@ -37,7 +37,7 @@ Esta app usa `@pollar/core` / `@pollar/react` para todo el ciclo de dinero — l
 
 ### Por qué el pago va wallet-a-wallet y no vía QR bancario directo
 
-Evaluamos usar el ramp bancario de Pollar (`openRampModal`, SEP-24) para que el pago del reclamo llegue directo a una cuenta en bolivianos. Confirmamos con la documentación oficial del SDK que ese ramp siempre deposita/retira a la wallet del usuario autenticado — no admite un destinatario distinto — y que Bolivia/BOB no está documentado como país soportado. Por eso el flujo real usa el primitivo de pago P2P que el propio SDK ya expone (el mismo que usa `money-pool`): el organizador paga directo a la wallet Pollar del beneficiario. Si el beneficiario quiere retirar a bolivianos después, puede hacer su propio off-ramp desde su cuenta — eso queda fuera del alcance de este MVP.
+Evaluamos usar el ramp bancario de Pollar (`openRampModal`, SEP-24) para que el pago del reclamo llegue directo a una cuenta en bolivianos. Confirmamos con la documentación oficial del SDK que ese ramp siempre deposita/retira a la wallet del usuario autenticado — no admite un destinatario distinto — y que Bolivia/BOB no está documentado como país soportado. Lo probamos en vivo igual: al intentar abrirlo, el propio dashboard de Pollar responde *"No ramp providers available on this network yet"* — confirmado, no solo inferido de la documentación. Por eso el flujo real usa el primitivo de pago P2P que el propio SDK ya expone (el mismo que usa `money-pool`): el organizador paga directo a la wallet Pollar del beneficiario. Si el beneficiario quiere retirar a bolivianos después, puede hacer su propio off-ramp desde su cuenta — eso queda fuera del alcance de este MVP.
 
 ## Cómo correrlo
 
