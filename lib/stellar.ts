@@ -1,8 +1,11 @@
 import { createHash } from "crypto";
 import { Keypair, rpc, Transaction, Networks, Operation } from "@stellar/stellar-sdk";
 
+// SDF doesn't run a free public Soroban RPC for mainnet (only testnet), so
+// 'soroban-mainnet.stellar.org' was never a real host — it doesn't resolve.
+// mainnet.sorobanrpc.com is a real, community-run public mainnet endpoint.
 const RPC_URL = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
-  ? 'https://soroban-mainnet.stellar.org'
+  ? 'https://mainnet.sorobanrpc.com'
   : 'https://soroban-testnet.stellar.org';
 
 const NETWORK_PASSPHRASE = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
