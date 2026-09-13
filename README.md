@@ -35,9 +35,11 @@ Esta app usa `@pollar/core` / `@pollar/react` para todo el ciclo de dinero — l
 | [`app/api/claims/[id]/pay/route.ts`](app/api/claims/[id]/pay/route.ts) | Solo el organizador (dueño de la wallet del fondo) puede ejecutar un pago, y solo si el reclamo ya juntó el quórum de aprobaciones. |
 | [`lib/server-auth.ts`](lib/server-auth.ts) | Cada acción sensible (reportar reclamo, votar, pagar) requiere una firma SEP-53 fresca del usuario — no solo confiar en quién dice ser. |
 
-### Por qué el pago va wallet-a-wallet y no vía QR bancario directo
+### El ramp BOB↔USDC — para cargar tu cuenta, no para pagar reclamos
 
-Evaluamos usar el ramp bancario de Pollar (`openRampModal`, SEP-24) para que el pago del reclamo llegue directo a una cuenta en bolivianos. Confirmamos con la documentación oficial del SDK que ese ramp siempre deposita/retira a la wallet del usuario autenticado — no admite un destinatario distinto — y que Bolivia/BOB no está documentado como país soportado. Lo probamos en vivo igual: al intentar abrirlo, el propio dashboard de Pollar responde *"No ramp providers available on this network yet"* — confirmado, no solo inferido de la documentación. Por eso el flujo real usa el primitivo de pago P2P que el propio SDK ya expone (el mismo que usa `money-pool`): el organizador paga directo a la wallet Pollar del beneficiario. Si el beneficiario quiere retirar a bolivianos después, puede hacer su propio off-ramp desde su cuenta — eso queda fuera del alcance de este MVP.
+Pollar tiene un ramp bancario (`openRampModal`, SEP-24) que convierte bolivianos a USDC y viceversa. Lo probamos en vivo: al principio no había proveedores activos en la red (*"No ramp providers available on this network yet"*), pero en pruebas posteriores ya funcionó — documentado en video — y cualquier usuario puede depositar bolivianos y recibir USDC directo en **su propia** cuenta. Es la forma más fácil de conseguir USDC para usar la app, sin pasar por un exchange.
+
+Lo que ese ramp **no hace** es depositar a la cuenta de un tercero — según la documentación oficial del SDK, siempre deposita/retira a la wallet del usuario autenticado, nunca a otra. Por eso el pago de un reclamo aprobado no usa el ramp: usa el primitivo de pago P2P que el propio SDK ya expone (el mismo que usa `money-pool`), wallet a wallet en USDC — el organizador paga directo a la wallet Pollar del beneficiario. Si ese beneficiario quiere convertir su USDC a bolivianos después, puede hacerlo con su propio ramp desde su cuenta — eso ya está resuelto por Pollar, no por esta app.
 
 ## Cómo correrlo
 
