@@ -10,6 +10,8 @@ Construido para el Track de Pollar de la Buildathon Ethereum Bolivia (Cochabamba
 
 **Transacción real verificada:** aporte de USDC en mainnet, confirmado — [`0db2e31a4265340aa74b4bd809e1b347e4624887cdc41a3c2a1e45fd30cc469a`](https://stellar.expert/explorer/public/tx/0db2e31a4265340aa74b4bd809e1b347e4624887cdc41a3c2a1e45fd30cc469a).
 
+**Video demo:** [youtu.be/FprRfzraX4Y](https://youtu.be/FprRfzraX4Y)
+
 ## El problema
 
 Más del 80% de los trabajadores urbanos en Bolivia operan en el sector informal. Los motorepartidores no tienen seguro de accidentes ni de sus herramientas de trabajo. Un percance material común (una pantalla rota, un freno dañado) cuesta entre Bs 150 y Bs 400 y los deja sin poder trabajar 2-3 días — sin liquidez inmediata para el repuesto ni acceso a un seguro tradicional que cubra daños menores.
