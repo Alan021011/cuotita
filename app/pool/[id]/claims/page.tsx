@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { LoginButton } from "@/components/LoginButton";
 import { BottomNav } from "@/components/BottomNav";
-import { PollarLogo } from "@/components/ui/PollarLogo";
+import { CuotitaLogo } from "@/components/ui/CuotitaLogo";
 import { PayoutButton } from "@/components/PayoutButton";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { useAuthProof } from "@/hooks/useAuthProof";
@@ -141,10 +141,10 @@ export default function ClaimsPage({ params }: { params: Promise<{ id: string }>
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
       <header className="flex items-center justify-between gap-3 pb-4">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <PollarLogo size={30} />
+        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+          <CuotitaLogo size={30} />
           <h1 className="text-xl font-bold tracking-tight truncate">Reclamos</h1>
-        </div>
+        </Link>
         <LoginButton />
       </header>
 

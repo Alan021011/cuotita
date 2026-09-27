@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LoginButton } from "@/components/LoginButton";
 import { BalanceCard } from "@/components/BalanceCard";
 import { PollarLogo } from "@/components/ui/PollarLogo";
+import { CuotitaLogo } from "@/components/ui/CuotitaLogo";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { BottomNav } from "@/components/BottomNav";
 
@@ -49,12 +50,6 @@ export default function Home() {
                   className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-8 text-base font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:bg-primary-hover active:scale-[0.97]"
                 >
                   Comenzar gratis
-                </button>
-                <button
-                  onClick={login}
-                  className="flex h-12 items-center justify-center gap-2 rounded-xl border border-[#f3ede2]/25 px-8 text-base font-semibold text-[#f3ede2] transition-colors hover:bg-white/5"
-                >
-                  Iniciar sesión
                 </button>
               </div>
             </div>
@@ -304,7 +299,7 @@ export default function Home() {
 
                   <label className="mb-1 block text-[11px] font-medium text-muted">Monto (Bs)</label>
                   <div className="mb-3 rounded-xl border border-border bg-surface px-3 py-2.5 text-sm font-semibold text-foreground">
-                    Bs 250.00
+                    Bs 69.00
                   </div>
 
                   <div className="mb-3 flex justify-center">
@@ -383,7 +378,7 @@ export default function Home() {
 
                   <label className="mb-1 block text-[11px] font-medium text-muted">Recibes en tu banco</label>
                   <div className="mb-4 flex items-center justify-between rounded-xl border border-border bg-surface px-3 py-2.5">
-                    <span className="text-sm font-bold text-foreground">Bs 250.00</span>
+                    <span className="text-sm font-bold text-foreground">Bs 69.00</span>
                     <span className="rounded-full bg-success-light px-2 py-0.5 text-[10px] font-bold text-success">Al instante</span>
                   </div>
 
@@ -524,7 +519,7 @@ export default function Home() {
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
       <header className="flex items-center justify-between gap-3 pb-4">
         <div className="flex min-w-0 items-center gap-2.5">
-          <PollarLogo size={30} />
+          <CuotitaLogo size={30} />
           <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
             Cuotita
           </h1>

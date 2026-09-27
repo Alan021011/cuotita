@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { usePollarAuth } from '../../../hooks/usePollarAuth';
 import { LoginButton } from '../../../components/LoginButton';
 import { Button } from '../../../components/ui/Button';
@@ -10,7 +11,7 @@ import { Card } from '../../../components/ui/Card';
 import { usePollar } from '@pollar/react';
 import { buildSessionMessage, POOL_AUTH_HEADER } from '@/lib/server-auth';
 import { BottomNav } from '@/components/BottomNav';
-import { PollarLogo } from '@/components/ui/PollarLogo';
+import { CuotitaLogo } from '@/components/ui/CuotitaLogo';
 
 export default function NewPoolPage() {
   const { user, isLoading } = usePollarAuth();
@@ -43,9 +44,17 @@ export default function NewPoolPage() {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <h1 className="text-2xl font-bold mb-4 text-center">Inicia sesión para crear un pool</h1>
-        <LoginButton />
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-8">
+        <header className="flex items-center gap-2.5 pb-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <CuotitaLogo size={30} />
+            <span className="text-xl font-bold tracking-tight">Cuotita</span>
+          </Link>
+        </header>
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
+          <h1 className="text-2xl font-bold mb-2 text-center">Inicia sesión para crear un pool</h1>
+          <LoginButton />
+        </div>
       </div>
     );
   }
@@ -134,12 +143,12 @@ export default function NewPoolPage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
       <header className="flex items-center justify-between gap-3 pb-4">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <PollarLogo size={30} />
+        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+          <CuotitaLogo size={30} />
           <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
             Crear un Pool
           </h1>
-        </div>
+        </Link>
         <LoginButton />
       </header>
 
