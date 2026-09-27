@@ -118,6 +118,42 @@ export async function verifyTxOnRPC(
   }
 }
 
+/**
+ * Verifies an Earn deposit/withdraw (Soroban contract call, e.g. Blend) on RPC.
+ * Unlike verifyTxOnRPC (classic payment op), we can't decode the exact amount
+ * from a Soroban invoke_host_function without that contract's ABI, so this only
+ * confirms the transaction really happened, succeeded on-chain, and was signed
+ * by the expected address — enough to stop a fabricated history entry. The
+ * amount/kind recorded alongside it come from the same request that told the
+ * Pollar SDK to build this exact transaction, not from an untrusted client claim.
+ */
+export async function verifyEarnTxOnRPC(
+  hash: string,
+  expectedAddress: string
+): Promise<VerificationResult> {
+  try {
+    const server = new rpc.Server(RPC_URL);
+    const txRes = await server.getTransaction(hash);
+
+    if (txRes.status === 'NOT_FOUND') {
+      return { valid: false, error: "Transaction does not exist on RPC or is too old" };
+    }
+    if (txRes.status !== 'SUCCESS') {
+      return { valid: false, error: "Transaction failed on-chain" };
+    }
+
+    const tx = new Transaction(txRes.envelopeXdr, NETWORK_PASSPHRASE);
+    if (tx.source !== expectedAddress) {
+      return { valid: false, error: `Sender mismatch: expected ${expectedAddress}, got ${tx.source}` };
+    }
+
+    return { valid: true, from: tx.source };
+  } catch (err) {
+    console.error("Error verifyEarnTxOnRPC:", err);
+    return { valid: false, error: "Connection or parsing error with Stellar RPC" };
+  }
+}
+
 const SEP53_PREFIX = "Stellar Signed Message:\n";
 
 function sha256(data: Buffer): Buffer {

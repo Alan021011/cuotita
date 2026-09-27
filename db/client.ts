@@ -78,6 +78,17 @@ if (process.env.DATABASE_URL) {
           decision TEXT NOT NULL,
           created_at INTEGER NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS earn_movements (
+          id TEXT PRIMARY KEY,
+          address TEXT NOT NULL,
+          provider TEXT NOT NULL,
+          opportunity_id TEXT NOT NULL,
+          kind TEXT NOT NULL,
+          amount TEXT NOT NULL,
+          asset_code TEXT NOT NULL,
+          tx_hash TEXT UNIQUE NOT NULL,
+          created_at INTEGER NOT NULL
+        );
       `);
     } catch (err) {
       console.error('Local DB init error:', err);

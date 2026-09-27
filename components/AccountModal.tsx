@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { usePollar } from "@pollar/react";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { SendXlmModal } from "@/components/SendXlmModal";
+import { EarnModal } from "@/components/EarnModal";
+import { RampQuoteModal } from "@/components/RampQuoteModal";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
+import { useRampRate } from "@/hooks/useRampRate";
 import { middleTruncate } from "@/lib/format";
 
 export function AccountModal({
@@ -16,9 +18,11 @@ export function AccountModal({
   onClose: () => void;
 }) {
   const { user, logout } = usePollarAuth();
-  const { openRampModal } = usePollar();
   const [copied, setCopied] = useState(false);
   const [sendXlmOpen, setSendXlmOpen] = useState(false);
+  const [earnOpen, setEarnOpen] = useState(false);
+  const [rampOpen, setRampOpen] = useState(false);
+  const rate = useRampRate(!!user);
   const router = useRouter();
 
   if (!user) return null;
@@ -52,11 +56,27 @@ export function AccountModal({
           </div>
         </div>
 
+        {rate.step === "ready" && (rate.buy || rate.sell) && (
+          <p className="text-center text-xs text-muted">
+            Hoy: 1 USDC ≈{" "}
+            {rate.buy && <>Bs {rate.buy.rate.toFixed(2)} (compra)</>}
+            {rate.buy && rate.sell && " · "}
+            {rate.sell && <>Bs {rate.sell.rate.toFixed(2)} (venta)</>}
+          </p>
+        )}
+
         <button
-          onClick={() => openRampModal()}
+          onClick={() => setRampOpen(true)}
           className="w-full rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
         >
           Agregar fondos
+        </button>
+
+        <button
+          onClick={() => setEarnOpen(true)}
+          className="w-full rounded-xl border border-primary/30 py-2.5 text-sm font-semibold text-primary transition-colors hover:bg-primary-light"
+        >
+          Ganar intereses
         </button>
 
         <button
@@ -79,6 +99,8 @@ export function AccountModal({
       </div>
 
       <SendXlmModal open={sendXlmOpen} onClose={() => setSendXlmOpen(false)} />
+      <EarnModal open={earnOpen} onClose={() => setEarnOpen(false)} address={user.address} />
+      <RampQuoteModal open={rampOpen} onClose={() => setRampOpen(false)} />
     </Modal>
   );
 }

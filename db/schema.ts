@@ -146,3 +146,31 @@ const sqliteClaimApprovals = sqliteTable('claim_approvals', {
 });
 
 export const claimApprovals = (isLocal ? sqliteClaimApprovals : pgClaimApprovals) as typeof pgClaimApprovals;
+
+export const earnKindEnum = pgEnum('earn_kind', ['deposit', 'withdraw']);
+
+const pgEarnMovements = pgTable('earn_movements', {
+  id: text('id').primaryKey(),
+  address: text('address').notNull(),
+  provider: text('provider').notNull(),
+  opportunityId: text('opportunity_id').notNull(),
+  kind: earnKindEnum('kind').notNull(),
+  amount: numeric('amount', { precision: 18, scale: 7 }).notNull(),
+  assetCode: text('asset_code').notNull(),
+  txHash: text('tx_hash').unique().notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+const sqliteEarnMovements = sqliteTable('earn_movements', {
+  id: sqliteText('id').primaryKey(),
+  address: sqliteText('address').notNull(),
+  provider: sqliteText('provider').notNull(),
+  opportunityId: sqliteText('opportunity_id').notNull(),
+  kind: sqliteText('kind').notNull(),
+  amount: sqliteText('amount').notNull(),
+  assetCode: sqliteText('asset_code').notNull(),
+  txHash: sqliteText('tx_hash').unique().notNull(),
+  createdAt: sqliteInteger('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()).notNull(),
+});
+
+export const earnMovements = (isLocal ? sqliteEarnMovements : pgEarnMovements) as typeof pgEarnMovements;
