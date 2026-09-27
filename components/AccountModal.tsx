@@ -35,7 +35,7 @@ export function AccountModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Account">
+    <Modal open={open} onClose={onClose} title="Cuenta">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-surface">
           <div className="flex items-center justify-between gap-4 px-4 py-3.5">

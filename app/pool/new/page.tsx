@@ -36,7 +36,7 @@ export default function NewPoolPage() {
   if (isLoading) {
     return (
       <div className="flex justify-center p-10">
-        <div>Loading...</div>
+        <div>Cargando...</div>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export default function NewPoolPage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <h1 className="text-2xl font-bold mb-4 text-center">Log in to create a Pool</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Inicia sesión para crear un pool</h1>
         <LoginButton />
       </div>
     );
@@ -83,7 +83,7 @@ export default function NewPoolPage() {
           serverTime = time;
         }
       } catch (e) {
-        console.warn('Could not fetch server time', e);
+        console.warn('No se pudo obtener la hora del servidor', e);
       }
 
       const offset = serverTime - Date.now();
@@ -117,7 +117,7 @@ export default function NewPoolPage() {
 
       if (!res.ok) {
         const error = await res.json();
-        alert(error.error || 'Failed to create pool');
+        alert(error.error || 'No se pudo crear el pool');
         setIsSubmitting(false);
         return;
       }
@@ -126,7 +126,7 @@ export default function NewPoolPage() {
       router.push(`/pool/${pool.id}`);
     } catch (err) {
       console.error(err);
-      alert('An error occurred');
+      alert('Ocurrió un error');
       setIsSubmitting(false);
     }
   }
@@ -144,28 +144,28 @@ export default function NewPoolPage() {
       </header>
 
       <Card className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center">Create a new Pool</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Crear un pool nuevo</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Name *
+              Nombre *
             </label>
-            <Input id="name" name="name" required placeholder="My Awesome Pool" />
+            <Input id="name" name="name" required placeholder="Fondo de la parada" />
           </div>
           <div>
             <label htmlFor="description" className="block text-sm font-medium mb-1">
-              Description
+              Descripción
             </label>
             <textarea
               id="description"
               name="description"
-              placeholder="What is this pool for?"
+              placeholder="¿Para qué es este pool?"
               className="w-full min-h-25 rounded-xl border bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 transition-shadow border-border focus:border-primary focus:ring-primary/25 resize-y"
             />
           </div>
           <div>
             <label htmlFor="goalAmount" className="block text-sm font-medium mb-1">
-              Goal Amount (USDC) *
+              Meta (USDC) *
             </label>
             <Input
               id="goalAmount"
@@ -179,13 +179,13 @@ export default function NewPoolPage() {
           </div>
           <div>
             <label htmlFor="deadline" className="block text-sm font-medium mb-1">
-              Deadline
+              Fecha límite
             </label>
             <Input id="deadline" name="deadline" type="datetime-local" onChange={handleDateChange} />
             {deadlineError && <p className="text-sm text-red-500 mt-1">{deadlineError}</p>}
           </div>
           <Button type="submit" disabled={isSubmitting || !!deadlineError} className="mt-4 w-full">
-            {isSubmitting ? 'Creating...' : 'Create Pool'}
+            {isSubmitting ? 'Creando...' : 'Crear pool'}
           </Button>
         </form>
       </Card>
