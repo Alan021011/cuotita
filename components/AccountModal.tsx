@@ -33,7 +33,7 @@ export function AccountModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Account">
+    <Modal open={open} onClose={onClose} title="Cuenta">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-surface">
           <div className="flex items-center justify-between gap-4 px-4 py-3.5">
@@ -49,7 +49,7 @@ export function AccountModal({
               title={user.address}
               className="font-mono text-sm font-medium text-primary transition-colors hover:text-primary-hover"
             >
-              {copied ? "Copied ✓" : middleTruncate(user.address, 6, 6)}
+              {copied ? "Copiado ✓" : middleTruncate(user.address, 6, 6)}
             </button>
           </div>
         </div>
@@ -85,7 +85,7 @@ export function AccountModal({
           }}
           className="w-full rounded-xl border border-error-border py-2.5 text-sm font-semibold text-error transition-colors hover:bg-error-light"
         >
-          Log out
+          Cerrar sesión
         </button>
       </div>
 
