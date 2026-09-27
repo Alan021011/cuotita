@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, notFound } from "next/navigation";
+import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -10,7 +11,7 @@ import { LoginButton } from "@/components/LoginButton";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { useAuthProof } from "@/hooks/useAuthProof";
 import { POOL_AUTH_HEADER } from "@/lib/server-auth";
-import { PollarLogo } from "@/components/ui/PollarLogo";
+import { CuotitaLogo } from "@/components/ui/CuotitaLogo";
 
 const CATEGORIES: { value: string; label: string }[] = [
   { value: "pantalla", label: "Pantalla de celular" },
@@ -120,10 +121,10 @@ export default function NewClaimPage({ params }: { params: Promise<{ id: string 
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12">
       <header className="flex items-center justify-between gap-3 pb-4">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <PollarLogo size={30} />
+        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+          <CuotitaLogo size={30} />
           <h1 className="text-xl font-bold tracking-tight truncate">Reportar auxilio</h1>
-        </div>
+        </Link>
         <LoginButton />
       </header>
 

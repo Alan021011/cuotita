@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoginButton } from "@/components/LoginButton";
-import { PollarLogo } from "@/components/ui/PollarLogo";
+import { CuotitaLogo } from "@/components/ui/CuotitaLogo";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import type { PoolWithTotal } from "@/lib/pools";
 import { BottomNav } from "@/components/BottomNav";
@@ -70,19 +70,26 @@ export default function HistoryPage() {
 
   if (!user && !authLoading) {
     return (
-      <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-12">
-        <div className="flex flex-col items-center gap-5 text-center">
-          <PollarLogo size={104} />
-          <h1 className="font-display text-5xl leading-tight sm:text-6xl">
-            Historial
-            <span className="block text-primary">Inicia sesión</span>
-          </h1>
-          <p className="max-w-sm text-lg leading-8 text-muted">
-            Inicia sesión con Pollar para ver los pools que has organizado o a los que has aportado.
-          </p>
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-8">
+        <header className="flex items-center gap-2.5 pb-4">
+          <Link href="/" className="flex items-center gap-2.5">
+            <CuotitaLogo size={30} />
+            <span className="text-xl font-bold tracking-tight">Cuotita</span>
+          </Link>
+        </header>
+        <div className="flex flex-1 flex-col items-center justify-center gap-8 px-2 py-12">
+          <div className="flex flex-col items-center gap-5 text-center">
+            <CuotitaLogo size={104} />
+            <h1 className="font-display text-5xl leading-tight sm:text-6xl">
+              Historial
+              <span className="block text-primary">Inicia sesión</span>
+            </h1>
+            <p className="max-w-sm text-lg leading-8 text-muted">
+              Inicia sesión con Pollar para ver los pools que has organizado o a los que has aportado.
+            </p>
+          </div>
+          <LoginButton />
         </div>
-        <LoginButton />
-        <BottomNav />
       </main>
     );
   }
@@ -90,12 +97,12 @@ export default function HistoryPage() {
   return (
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
       <header className="flex items-center justify-between gap-3 pb-4">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <PollarLogo size={30} />
+        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+          <CuotitaLogo size={30} />
           <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
             Tu Historial
           </h1>
-        </div>
+        </Link>
         <LoginButton />
       </header>
 
