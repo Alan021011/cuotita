@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { usePollar } from "@pollar/react";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { SendXlmModal } from "@/components/SendXlmModal";
-import { RampQuoteModal } from "@/components/RampQuoteModal";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { useRampRate } from "@/hooks/useRampRate";
 import { middleTruncate } from "@/lib/format";
@@ -17,9 +17,9 @@ export function AccountModal({
   onClose: () => void;
 }) {
   const { user, logout } = usePollarAuth();
+  const { openRampModal } = usePollar();
   const [copied, setCopied] = useState(false);
   const [sendXlmOpen, setSendXlmOpen] = useState(false);
-  const [rampOpen, setRampOpen] = useState(false);
   const rate = useRampRate(!!user);
   const router = useRouter();
 
@@ -64,7 +64,7 @@ export function AccountModal({
         )}
 
         <button
-          onClick={() => setRampOpen(true)}
+          onClick={() => openRampModal()}
           className="w-full rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
         >
           Agregar fondos
@@ -90,7 +90,6 @@ export function AccountModal({
       </div>
 
       <SendXlmModal open={sendXlmOpen} onClose={() => setSendXlmOpen(false)} />
-      <RampQuoteModal open={rampOpen} onClose={() => setRampOpen(false)} />
     </Modal>
   );
 }
