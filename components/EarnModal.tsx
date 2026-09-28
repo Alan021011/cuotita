@@ -130,6 +130,7 @@ export function EarnModal({
   const [retrying, setRetrying] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const [warningHash, setWarningHash] = useState<string | null>(null);
 
   const [prevOpen, setPrevOpen] = useState(open);
   if (open !== prevOpen) {
@@ -138,6 +139,7 @@ export function EarnModal({
       setAmount("");
       setActionError(null);
       setWarning(null);
+      setWarningHash(null);
       void load();
       void loadHistory();
     }
@@ -190,6 +192,7 @@ export function EarnModal({
     setBusy(true);
     setActionError(null);
     setWarning(null);
+    setWarningHash(null);
     try {
       const fn = mode === "deposit" ? earnDeposit : earnWithdraw;
       const args = { provider: opportunity.provider, opportunity: opportunity.id, amount };
@@ -228,9 +231,16 @@ export function EarnModal({
       });
       setSavingHistory(false);
       if (!saved) {
+        // We couldn't confirm this landed on-chain within our wait — unlike
+        // the earlier version of this message, we don't assert it definitely
+        // went through. It might still land a bit later, or it might have
+        // been rejected by the network after Pollar handed us a hash (e.g.
+        // the same fee-repricing issue, just after submission instead of
+        // before). The hash is the way to actually know either way.
         setWarning(
-          "El movimiento se hizo y tu saldo de arriba ya lo tiene en cuenta — solo tardó en aparecer en la lista de \"Tu historial\". Se va a poner al día solo."
+          `Todavía no pudimos confirmar que este ${mode === "deposit" ? "depósito" : "retiro"} quedó en la red. Puede que solo esté tardando, o puede que no se haya hecho. Revisalo vos mismo con el enlace de abajo — si en unos minutos ahí no aparece nada, no se hizo y tu saldo sigue como antes.`
         );
+        setWarningHash(result.hash);
       }
 
       setAmount("");
@@ -297,6 +307,7 @@ export function EarnModal({
                   setMode("deposit");
                   setActionError(null);
                   setWarning(null);
+                  setWarningHash(null);
                 }}
                 className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${
                   mode === "deposit"
@@ -311,6 +322,7 @@ export function EarnModal({
                   setMode("withdraw");
                   setActionError(null);
                   setWarning(null);
+                  setWarningHash(null);
                 }}
                 className={`flex-1 rounded-xl py-2 text-sm font-semibold transition-colors ${
                   mode === "withdraw"
@@ -348,9 +360,19 @@ export function EarnModal({
               </p>
             )}
             {warning && (
-              <p className="rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted">
-                {warning}
-              </p>
+              <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm text-muted">
+                <p>{warning}</p>
+                {warningHash && (
+                  <a
+                    href={`${STELLAR_EXPERT_URL}/tx/${warningHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-mono text-xs text-primary hover:underline"
+                  >
+                    Ver en Stellar Expert: {middleTruncate(warningHash, 8, 6)}
+                  </a>
+                )}
+              </div>
             )}
 
             <Button onClick={() => void submit()} disabled={!amountValid} loading={busy} className="w-full py-3">
