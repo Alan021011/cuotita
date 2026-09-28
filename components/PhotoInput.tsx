@@ -1,18 +1,22 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Button } from "./ui/Button";
+import { Icon } from "./ui/Icon";
 
 interface PhotoInputProps {
   label: string;
   value: string | null;
   onChange: (dataUrl: string | null) => void;
   required?: boolean;
+  /** Primary evidence gets the big drop zone; optional extras a compact one. */
+  size?: "lg" | "sm";
+  icon?: string;
+  hint?: string;
 }
 
 const MAX_BYTES = 4 * 1024 * 1024;
 
-export function PhotoInput({ label, value, onChange, required }: PhotoInputProps) {
+export function PhotoInput({ label, value, onChange, required, size = "lg", icon = "photo_camera", hint }: PhotoInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,29 +39,46 @@ export function PhotoInput({ label, value, onChange, required }: PhotoInputProps
 
   return (
     <div className="flex w-full flex-col gap-1.5">
-      <label className="text-sm font-medium text-foreground">
-        {label} {required && <span className="text-error">*</span>}
-      </label>
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+        {label} {required && <span className="text-primary">*</span>}
+      </span>
 
       {value ? (
         <div className="relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={value} alt={label} className="w-full max-h-64 object-cover rounded-xl border border-border" />
+          <img src={value} alt={label} className="max-h-64 w-full rounded-xl border border-border object-cover" />
           <button
             type="button"
+            aria-label="Quitar foto"
             onClick={() => {
               onChange(null);
               if (inputRef.current) inputRef.current.value = "";
             }}
-            className="absolute top-2 right-2 bg-background/90 text-error rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-border"
+            className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background/90 text-error"
           >
-            ✕
+            <Icon name="close" className="text-lg" />
           </button>
         </div>
       ) : (
-        <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="w-full py-6 border-dashed">
-          Subir foto
-        </Button>
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className={`flex w-full items-center gap-3 rounded-xl border-2 border-dashed border-primary/40 bg-background text-left transition-colors hover:border-primary hover:bg-primary/5 ${
+            size === "lg" ? "flex-col justify-center px-4 py-8 text-center" : "px-4 py-3.5"
+          }`}
+        >
+          <span
+            className={`flex shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary ${
+              size === "lg" ? "h-14 w-14" : "h-10 w-10"
+            }`}
+          >
+            <Icon name={icon} className={size === "lg" ? "text-3xl" : "text-xl"} />
+          </span>
+          <span className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">Tomar o subir foto</span>
+            {hint && <span className="mt-0.5 text-xs text-muted">{hint}</span>}
+          </span>
+        </button>
       )}
 
       <input

@@ -3,20 +3,22 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProgressBar } from "../../../components/ProgressBar";
-import { PoolActions } from "../../../components/PoolActions";
-import { PoolShareGrid } from "../../../components/PoolShareGrid";
-import { ContributionList } from "../../../components/ContributionList";
-import { BottomNav } from "../../../components/BottomNav";
-import { CuotitaLogo } from "../../../components/ui/CuotitaLogo";
-import { LoginButton } from "../../../components/LoginButton";
-import { Card } from "../../../components/ui/Card";
+import { ProgressBar } from "@/components/ProgressBar";
+import { PoolActions } from "@/components/PoolActions";
+import { PoolShareGrid } from "@/components/PoolShareGrid";
+import { ContributionList } from "@/components/ContributionList";
+import { BottomNav } from "@/components/BottomNav";
+import { AppHeader, AppShell } from "@/components/AppHeader";
+import { Icon } from "@/components/ui/Icon";
+import { Spinner } from "@/components/ui/Spinner";
+import { middleTruncate } from "@/lib/format";
 import type { PoolWithTotal } from "@/lib/pools";
 
 export default function PoolPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [pool, setPool] = useState<PoolWithTotal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingClaims, setPendingClaims] = useState(0);
 
   useEffect(() => {
     fetch(`/api/pools/${id}`)
@@ -36,6 +38,11 @@ export default function PoolPage({ params }: { params: Promise<{ id: string }> }
         setIsLoading(false);
       });
 
+    fetch(`/api/pools/${id}/claims`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((claims: { status: string }[]) => setPendingClaims(claims.filter((c) => c.status === "pending").length))
+      .catch(() => {});
+
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`/api/pools/${id}`);
@@ -52,14 +59,18 @@ export default function PoolPage({ params }: { params: Promise<{ id: string }> }
   }, [id]);
 
   if (isLoading) {
-    return <div className="p-10 text-center">Cargando datos del pool...</div>;
+    return (
+      <div className="flex flex-1 items-center justify-center gap-3 p-10 text-muted">
+        <Spinner /> Cargando el fondo…
+      </div>
+    );
   }
 
   if (!pool) {
-    return <div className="p-10 text-center text-red-500">Error al cargar el pool</div>;
+    return <div className="p-10 text-center text-error">Error al cargar el fondo</div>;
   }
 
-  const isClosed = pool.status === 'closed';
+  const isClosed = pool.status === "closed";
 
   const mappedContributions = (pool.contributions || []).map((c) => ({
     id: c.id,
@@ -71,83 +82,107 @@ export default function PoolPage({ params }: { params: Promise<{ id: string }> }
   }));
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
-      <header className="flex items-center justify-between gap-3 pb-4">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
-          <CuotitaLogo size={30} />
-          <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
-            Cuotita
-          </h1>
-        </Link>
-        <LoginButton />
-      </header>
-
-      <Card className="overflow-hidden mb-2">
-        <div className="p-6 text-center pb-4">
-          <h1 className="text-3xl font-bold text-foreground tracking-tight mb-2">{pool.name}</h1>
-          {pool.description && (
-            <p className="text-muted max-w-2xl mx-auto">{pool.description}</p>
-          )}
+    <>
+      <AppHeader />
+      <AppShell className="gap-4">
+        <div className="flex items-center justify-between gap-2">
+          <Link href="/history" className="inline-flex items-center gap-1.5 py-1 text-xs font-medium text-muted transition-colors hover:text-foreground">
+            <Icon name="arrow_back" className="text-sm" />
+            Mis fondos
+          </Link>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] text-muted">
+            <span className={`h-1.5 w-1.5 rounded-full ${isClosed ? "bg-muted" : "bg-success"}`} />
+            {isClosed ? "Cerrado" : "Activo"}
+          </span>
         </div>
 
-        <div className="px-6 pb-6">
-          <ProgressBar
-            total={pool.total}
-            goal={pool.goalAmount}
-            percentage={pool.percentage}
-          />
-        </div>
+        {/* Fund hero */}
+        <section className="relative overflow-hidden rounded-2xl border border-primary/50 bg-surface p-5 shadow-[0_8px_24px_rgb(0_0_0/0.6)]">
+          <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="px-6 pb-6 flex flex-wrap gap-4 text-xs font-medium text-muted/80  border-b border-border">
-          <div className="flex items-center gap-1.5" title="Organizador del Pool">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-            <span className="truncate max-w-30">{pool.organizerAddress.substring(0, 4)}...{pool.organizerAddress.substring(52)}</span>
+          <div className="mb-2 flex items-start justify-between gap-2">
+            <h1 className="font-display text-4xl leading-none tracking-wide text-foreground">{pool.name}</h1>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-surface-raised text-primary">
+              <Icon name="shield" className="text-xl" />
+            </div>
           </div>
-          {pool.deadline && (
-            <div className="flex items-center gap-1.5" title="Fecha límite">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-              <span>{new Date(pool.deadline).toLocaleDateString()}</span>
-            </div>
-          )}
-        </div>
+          {pool.description && <p className="mb-4 text-sm leading-relaxed text-muted">{pool.description}</p>}
 
-        <div className="p-6 bg-surface/50">
-          {isClosed && (
-            <div className="bg-error-light border border-error-border text-error p-4 rounded-xl text-center font-medium w-full shadow-sm mb-4">
-              Este pool ha sido cerrado. Ya no se aceptan más contribuciones.
-            </div>
-          )}
+          <div className="mb-4">
+            <ProgressBar total={pool.total} goal={pool.goalAmount} percentage={pool.percentage} />
+          </div>
 
-          {!isClosed && (
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-4 font-mono text-[11px] text-muted">
+            <span className="flex items-center gap-1.5" title={pool.organizerAddress}>
+              <Icon name="verified_user" className="text-sm text-primary" />
+              Org: <strong className="text-foreground">{middleTruncate(pool.organizerAddress, 4, 4)}</strong>
+            </span>
+            {pool.deadline && (
+              <span className="flex items-center gap-1.5">
+                <Icon name="event" className="text-sm text-primary" />
+                Cierre: {new Date(pool.deadline).toLocaleDateString("es-BO")}
+              </span>
+            )}
+          </div>
+
+          {isClosed ? (
+            <div className="rounded-xl border border-error-border bg-error-light p-4 text-center text-sm font-medium text-error">
+              Este fondo ha sido cerrado. Ya no se aceptan más aportes.
+            </div>
+          ) : (
             <PoolActions pool={pool} onPoolUpdated={setPool} />
           )}
-        </div>
-      </Card>
+        </section>
 
-      <div className="grid grid-cols-2 gap-3">
-        <Link
-          href={`/pool/${pool.id}/claim/new`}
-          className="flex items-center justify-center gap-2 rounded-xl border border-error-border bg-error-light px-4 py-3 text-sm font-semibold text-error text-center"
-        >
-          Reportar auxilio
-        </Link>
-        <Link
-          href={`/pool/${pool.id}/claims`}
-          className="flex items-center justify-center gap-2 rounded-xl border border-primary/30 bg-primary-light px-4 py-3 text-sm font-semibold text-primary text-center"
-        >
-          Ver reclamos
-        </Link>
-      </div>
+        {/* Claims tiles */}
+        <section className="grid grid-cols-2 gap-3">
+          <Link
+            href={`/pool/${pool.id}/claim/new`}
+            className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-error/40 bg-surface p-3.5 transition-colors hover:border-error"
+          >
+            <div className="pointer-events-none absolute -bottom-4 -right-4 h-16 w-16 rounded-full bg-error/10 blur-xl" />
+            <div>
+              <div className="mb-2.5 flex h-8 w-8 items-center justify-center rounded-lg bg-error/15 text-error">
+                <Icon name="handyman" className="text-lg" />
+              </div>
+              <h3 className="text-sm font-bold leading-snug text-foreground">Reportar auxilio</h3>
+              <p className="mt-1 text-[11px] leading-normal text-muted">Pide el pago de un daño con una foto.</p>
+            </div>
+            <span className="mt-3 flex items-center justify-center gap-1 rounded-lg border border-error/50 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-error">
+              Solicitar <Icon name="arrow_forward" className="text-xs" />
+            </span>
+          </Link>
 
-      <div className="mb-2">
+          <Link
+            href={`/pool/${pool.id}/claims`}
+            className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-primary/40 bg-surface p-3.5 transition-colors hover:border-primary"
+          >
+            <div className="pointer-events-none absolute -bottom-4 -right-4 h-16 w-16 rounded-full bg-primary/10 blur-xl" />
+            <div>
+              <div className="mb-2.5 flex items-center justify-between">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                  <Icon name="how_to_vote" className="text-lg" />
+                </div>
+                {pendingClaims > 0 && (
+                  <span className="rounded-full bg-primary px-1.5 py-0.5 font-mono text-[10px] font-bold text-primary-foreground">
+                    {pendingClaims} {pendingClaims === 1 ? "pendiente" : "pendientes"}
+                  </span>
+                )}
+              </div>
+              <h3 className="text-sm font-bold leading-snug text-foreground">Ver reclamos</h3>
+              <p className="mt-1 text-[11px] leading-normal text-muted">Revisa, vota y paga los auxilios.</p>
+            </div>
+            <span className="mt-3 flex items-center justify-center gap-1 rounded-lg border border-primary/30 bg-surface-raised py-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-primary">
+              Abrir <Icon name="chevron_right" className="text-xs" />
+            </span>
+          </Link>
+        </section>
+
         <PoolShareGrid pool={pool} />
-      </div>
 
-      <div className="bg-surface rounded-2xl p-6 shadow-sm border border-border">
         <ContributionList contributions={mappedContributions} />
-      </div>
-
+      </AppShell>
       <BottomNav />
-    </main>
+    </>
   );
 }

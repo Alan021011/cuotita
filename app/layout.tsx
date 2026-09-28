@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Bebas_Neue, IBM_Plex_Sans, IBM_Plex_Mono, Oswald } from "next/font/google";
 import { PollarAppProvider } from "@/lib/pollar";
 import "./globals.css";
 
@@ -13,6 +13,13 @@ const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500", "600"],
+});
+
+// Landing headlines (Stitch "Rider Mutual Aid" desktop design).
+const oswald = Oswald({
+  variable: "--font-oswald",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 const bebasNeue = Bebas_Neue({
@@ -29,12 +36,20 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
-      data-theme="dark"
+      lang="es"
       suppressHydrationWarning
-      className={`${plexSans.variable} ${plexMono.variable} ${bebasNeue.variable} h-full antialiased overflow-y-scroll`}
+      className={`${plexSans.variable} ${plexMono.variable} ${bebasNeue.variable} ${oswald.variable} h-full antialiased overflow-y-scroll`}
     >
-      <body className="min-h-full flex flex-col">
+      <head>
+        {/* Icon font used by the Stitch-generated designs (components/ui/Icon.tsx). */}
+        {/* display=block on purpose: an icon font must not flash its ligature names. */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font, @next/next/google-font-display */}
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-background">
         <PollarAppProvider>{children}</PollarAppProvider>
       </body>
     </html>

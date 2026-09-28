@@ -2,23 +2,27 @@
 
 import { useEffect, useState, use } from "react";
 import { useRouter, notFound } from "next/navigation";
-import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
+import { Spinner } from "@/components/ui/Spinner";
 import { PhotoInput } from "@/components/PhotoInput";
 import { LoginButton } from "@/components/LoginButton";
+import { BottomNav } from "@/components/BottomNav";
+import { AppHeader, AppShell } from "@/components/AppHeader";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
 import { useAuthProof } from "@/hooks/useAuthProof";
+import { useRampRate } from "@/hooks/useRampRate";
 import { POOL_AUTH_HEADER } from "@/lib/server-auth";
-import { CuotitaLogo } from "@/components/ui/CuotitaLogo";
+import { CLAIM_QUORUM } from "@/lib/constants";
 
-const CATEGORIES: { value: string; label: string }[] = [
-  { value: "pantalla", label: "Pantalla de celular" },
-  { value: "freno", label: "Freno / embrague" },
-  { value: "retrovisor", label: "Retrovisor / plásticos" },
-  { value: "llanta", label: "Llanta / aro" },
-  { value: "otro", label: "Otro daño material" },
+const CATEGORIES: { value: string; label: string; icon: string }[] = [
+  { value: "pantalla", label: "Pantalla de celular", icon: "smartphone" },
+  { value: "freno", label: "Freno / embrague", icon: "build_circle" },
+  { value: "retrovisor", label: "Retrovisor / plásticos", icon: "flip" },
+  { value: "llanta", label: "Llanta / aro", icon: "tire_repair" },
+  { value: "otro", label: "Otro daño material", icon: "more_horiz" },
 ];
 
 type PoolResponse = { id: string; name: string; status: string };
@@ -42,6 +46,15 @@ export default function NewClaimPage({ params }: { params: Promise<{ id: string 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+
+  // Today's Bs-per-USDC rate, to suggest the USDC amount from the Bs quote.
+  const rate = useRampRate(!!user);
+  const bsPerUsdc = rate.step === "ready" ? (rate.buy?.rate ?? rate.sell?.rate ?? null) : null;
+
+  function handleBsChange(value: string) {
+    setAmountBs(value);
+    if (bsPerUsdc && Number(value) > 0) setAmountUsdc((Number(value) / bsPerUsdc).toFixed(2));
+  }
 
   useEffect(() => {
     fetch(`/api/pools/${id}`)
@@ -96,117 +109,163 @@ export default function NewClaimPage({ params }: { params: Promise<{ id: string 
     }
   }
 
-  if (isLoading) return <div className="p-10 text-center">Cargando...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center gap-3 p-10 text-muted">
+        <Spinner /> Cargando…
+      </div>
+    );
+  }
   if (!pool) return <div className="p-10 text-center text-error">Error al cargar el fondo</div>;
 
   if (done) {
     return (
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 lg:max-w-lg lg:py-12">
-        <Card className="p-8 flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-3xl mb-4">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-          </div>
-          <h1 className="text-2xl font-bold mb-2">Reclamo enviado</h1>
-          <p className="text-muted mb-6">
-            Los delegados de {pool.name} revisarán tu solicitud. Te avisamos cuando se apruebe.
-          </p>
-          <Button onClick={() => router.push(`/pool/${pool.id}/claims`)} className="w-full py-3">
-            Ver estado de reclamos
-          </Button>
-        </Card>
-      </main>
+      <>
+        <AppHeader />
+        <AppShell>
+          <Card highlight className="flex flex-col items-center p-8 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-success-border bg-success-light text-success">
+              <Icon name="check" className="text-4xl" />
+            </div>
+            <h1 className="mb-2 font-display text-4xl text-foreground">Reclamo enviado</h1>
+            <p className="mb-6 text-sm text-muted">
+              Los delegados de {pool.name} revisarán tu solicitud. Se necesitan {CLAIM_QUORUM} aprobaciones para el pago.
+            </p>
+            <Button onClick={() => router.push(`/pool/${pool.id}/claims`)} className="h-12 w-full">
+              Ver estado de reclamos
+            </Button>
+          </Card>
+        </AppShell>
+        <BottomNav />
+      </>
     );
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12">
-      <header className="flex items-center justify-between gap-3 pb-4">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
-          <CuotitaLogo size={30} />
-          <h1 className="text-xl font-bold tracking-tight truncate">Reportar auxilio</h1>
-        </Link>
-        <LoginButton />
-      </header>
-
-      <Card>
-        <h2 className="text-lg font-bold mb-1">{pool.name}</h2>
-        <p className="text-sm text-muted mb-6">
-          Cuéntanos qué se rompió. Los delegados revisan la foto y aprueban el pago del fondo.
-        </p>
+    <>
+      <AppHeader backHref={`/pool/${pool.id}`} backLabel={pool.name} />
+      <AppShell>
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-error/40 bg-error-light px-2.5 py-1 text-[11px] font-medium text-error">
+            <Icon name="emergency" className="text-sm" />
+            Reclamo de auxilio
+          </span>
+          <h1 className="pt-1 font-display text-5xl leading-none tracking-wide text-foreground">Reportar un daño</h1>
+          <p className="flex items-center gap-1 text-sm text-muted">
+            <Icon name="shield" className="text-base text-primary" />
+            {pool.name}
+          </p>
+        </div>
 
         {!authLoading && !user ? (
-          <div className="flex flex-col items-center py-6">
-            <p className="text-sm text-muted mb-4 text-center">Inicia sesión para reportar un daño.</p>
+          <Card className="flex flex-col items-center gap-4 py-8 text-center">
+            <p className="text-sm text-muted">Inicia sesión para reportar un daño.</p>
             <LoginButton />
-          </div>
+          </Card>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-5">
             <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Tipo de daño</label>
+              <span className="mb-2 block text-[11px] font-semibold uppercase tracking-wider text-muted">Tipo de daño</span>
               <div className="grid grid-cols-2 gap-2">
-                {CATEGORIES.map((c) => (
-                  <button
-                    key={c.value}
-                    type="button"
-                    onClick={() => setCategory(c.value)}
-                    className={`text-sm rounded-xl border px-3 py-2.5 text-left transition-colors ${
-                      category === c.value
-                        ? "border-primary bg-primary-light text-primary font-semibold"
-                        : "border-border text-foreground hover:bg-surface"
-                    }`}
-                  >
-                    {c.label}
-                  </button>
-                ))}
+                {CATEGORIES.map((c) => {
+                  const selected = category === c.value;
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      aria-pressed={selected}
+                      onClick={() => setCategory(c.value)}
+                      className={`relative flex items-center gap-2.5 rounded-xl border px-3 py-3 text-left text-sm transition-all ${
+                        selected
+                          ? "border-primary bg-surface-raised font-semibold text-foreground shadow-[0_0_16px_-4px_rgb(245_158_11/0.4)]"
+                          : "border-border bg-surface text-foreground hover:border-primary/40"
+                      } ${c.value === "otro" ? "col-span-2" : ""}`}
+                    >
+                      <Icon name={c.icon} className={`text-xl ${selected ? "text-primary" : "text-muted"}`} />
+                      <span className="pr-4 leading-tight">{c.label}</span>
+                      {selected && <Icon name="check_circle" filled className="absolute right-2 top-2 text-base text-primary" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <Input
-              label="Presupuesto en Bolivianos (referencia)"
-              type="number"
-              min="0"
-              step="1"
-              placeholder="250"
-              value={amountBs}
-              onChange={(e) => setAmountBs(e.target.value)}
+            <div className="flex flex-col gap-2 rounded-2xl border border-border bg-surface p-4">
+              <Input
+                label="Presupuesto en Bolivianos (referencia)"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="250"
+                value={amountBs}
+                onChange={(e) => handleBsChange(e.target.value)}
+                className="font-mono"
+              />
+              <div className="flex items-center justify-center gap-2 py-1 font-mono text-[11px] text-muted">
+                <Icon name="south" className="text-base text-primary" />
+                {bsPerUsdc ? `1 USDC ≈ Bs ${bsPerUsdc.toFixed(2)} hoy` : "Convierte tu presupuesto a USDC"}
+              </div>
+              <Input
+                label="Monto a solicitar en USDC"
+                type="number"
+                min="0.01"
+                step="0.01"
+                placeholder="10.00"
+                value={amountUsdc}
+                onChange={(e) => setAmountUsdc(e.target.value)}
+                className="border-primary/50 font-mono text-lg font-bold text-primary"
+              />
+            </div>
+
+            <PhotoInput
+              label="Foto del daño"
+              value={photoDataUrl}
+              onChange={setPhotoDataUrl}
+              required
+              hint="Una foto clara del repuesto roto o el daño visible."
+            />
+            <PhotoInput
+              label="Foto de la cotización (opcional)"
+              value={quoteDataUrl}
+              onChange={setQuoteDataUrl}
+              size="sm"
+              icon="receipt_long"
+              hint="Proforma o cotización del taller."
             />
 
-            <Input
-              label="Monto a solicitar en USDC"
-              type="number"
-              min="0.01"
-              step="0.01"
-              placeholder="10.00"
-              value={amountUsdc}
-              onChange={(e) => setAmountUsdc(e.target.value)}
-            />
-
-            <div>
-              <label className="text-sm font-medium text-foreground mb-1.5 block">Descripción (opcional)</label>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="claim-description" className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+                Descripción <span className="normal-case tracking-normal text-muted-light">(opcional)</span>
+              </label>
               <textarea
+                id="claim-description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Qué pasó y dónde"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 focus:border-primary focus:ring-primary/25"
+                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
 
-            <PhotoInput label="Foto del daño" value={photoDataUrl} onChange={setPhotoDataUrl} required />
-            <PhotoInput label="Foto de la cotización (opcional)" value={quoteDataUrl} onChange={setQuoteDataUrl} />
+            <div className="flex items-start gap-3 rounded-xl border border-border bg-surface-raised p-3.5">
+              <Icon name="how_to_vote" className="mt-0.5 text-xl text-primary" />
+              <p className="text-xs leading-snug text-muted">
+                <span className="font-bold text-foreground">{CLAIM_QUORUM} delegados</span> de tu parada deben aprobar tu reclamo antes de que el organizador te pague.
+              </p>
+            </div>
 
             {error && (
-              <p className="rounded-xl border border-error-border bg-error-light px-3 py-2 text-sm text-error">
-                {error}
-              </p>
+              <p className="rounded-xl border border-error-border bg-error-light px-3 py-2 text-sm text-error">{error}</p>
             )}
 
-            <Button onClick={handleSubmit} loading={isSubmitting} className="w-full py-3">
+            <Button onClick={handleSubmit} loading={isSubmitting} className="h-12 w-full text-base uppercase tracking-wider">
+              {!isSubmitting && <Icon name="send" className="text-xl" />}
               Enviar reclamo
             </Button>
           </div>
         )}
-      </Card>
-    </main>
+      </AppShell>
+      <BottomNav />
+    </>
   );
 }

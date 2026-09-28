@@ -25,17 +25,17 @@ export function ReceiveModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Receive money">
+    <Modal open={open} onClose={onClose} title="Recibir dinero">
       <div className="flex flex-col gap-4">
         <p className="text-center text-sm leading-6 text-muted">
-          This is your address. Anyone with a Pollar account can send you money
-          here. Same account, same balance, in every Pollar app.
+          Esta es tu dirección. Cualquiera con una cuenta Pollar puede enviarte
+          dinero aquí. Misma cuenta y mismo saldo en todas las apps Pollar.
         </p>
         <p className="break-all rounded-xl border border-border bg-surface px-4 py-4 text-center font-mono text-sm leading-6">
           {user.address}
         </p>
         <Button onClick={() => void copyAddress()} className="w-full py-3">
-          {copied ? "Copied ✓" : "Copy address"}
+          {copied ? "Copiada ✓" : "Copiar dirección"}
         </Button>
       </div>
     </Modal>

@@ -77,7 +77,7 @@ export function SendModal({
         setError(
           res.message ??
             res.details ??
-            "The payment didn't go through. Check the address and your balance, then try again."
+            "El pago no se completó. Revisa la dirección y tu saldo, y vuelve a intentar."
         );
       } else {
         setResult(res);
@@ -87,7 +87,7 @@ export function SendModal({
       setError(
         err instanceof Error
           ? err.message
-          : "The payment didn't go through. Check your connection and try again."
+          : "El pago no se completó. Revisa tu conexión y vuelve a intentar."
       );
     } finally {
       setSending(false);
@@ -95,10 +95,10 @@ export function SendModal({
   }
 
   const titles: Record<Step, string> = {
-    amount: "Send money",
-    details: "Who's it for?",
-    review: "Confirm payment",
-    done: "Payment sent",
+    amount: "Enviar dinero",
+    details: "¿Para quién es?",
+    review: "Confirmar pago",
+    done: "Pago enviado",
   };
   const backOf: Partial<Record<Step, Step>> = {
     details: "amount",
@@ -116,7 +116,7 @@ export function SendModal({
       {step === "amount" && (
         <div className="flex flex-col items-center gap-6 py-4">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-            Amount in {currency}
+            Monto en {currency}
           </span>
           <input
             autoFocus
@@ -128,18 +128,18 @@ export function SendModal({
           />
           <div className="flex flex-col items-center gap-1 text-sm text-muted">
             <span>
-              Balance:{" "}
+              Saldo:{" "}
               <span className="font-mono">
                 {formatAmount(balance)} {currency}
               </span>
             </span>
             <span className="text-muted-light">
-              Fee: covered by the app · Instant
+              Comisión: la cubre la app · Al instante
             </span>
           </div>
           {overBalance && (
             <p className="text-sm text-error">
-              That&apos;s more than you have. Your balance is{" "}
+              Es más de lo que tienes. Tu saldo es{" "}
               {formatAmount(balance)} {currency}.
             </p>
           )}
@@ -148,7 +148,7 @@ export function SendModal({
             disabled={!amountValid}
             className="w-full py-3"
           >
-            Continue
+            Continuar
           </Button>
         </div>
       )}
@@ -156,20 +156,20 @@ export function SendModal({
       {step === "details" && (
         <div className="flex flex-col gap-4 py-2">
           <Input
-            label="Recipient address"
+            label="Dirección del destinatario"
             placeholder="G…"
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
             error={
               recipient && !looksLikeAddress(recipient)
-                ? "That doesn't look like a Pollar address. It starts with G and has 56 characters."
+                ? "No parece una dirección Pollar. Empieza con G y tiene 56 caracteres."
                 : undefined
             }
             className="font-mono"
           />
           <Input
-            label="Memo (optional)"
-            placeholder="What's it for?"
+            label="Nota (opcional)"
+            placeholder="¿Para qué es?"
             value={memo}
             maxLength={28}
             onChange={(e) => setMemo(e.target.value)}
@@ -179,7 +179,7 @@ export function SendModal({
             disabled={!looksLikeAddress(recipient)}
             className="w-full py-3"
           >
-            Review
+            Revisar
           </Button>
         </div>
       )}
@@ -187,14 +187,14 @@ export function SendModal({
       {step === "review" && (
         <div className="flex flex-col gap-5 py-2">
           <div className="flex flex-col items-center gap-1 py-2">
-            <span className="text-sm text-muted">Amount</span>
+            <span className="text-sm text-muted">Monto</span>
             <span className="font-mono text-4xl font-semibold tabular-nums tracking-tight">
               {amount} {currency}
             </span>
           </div>
           <div className="flex flex-col divide-y divide-border rounded-xl border border-border bg-surface">
             <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-              <span className="text-sm text-muted">To</span>
+              <span className="text-sm text-muted">Para</span>
               <span
                 className="font-mono text-sm font-medium"
                 title={recipient}
@@ -204,15 +204,15 @@ export function SendModal({
             </div>
             {memo && (
               <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-                <span className="text-sm text-muted">Memo</span>
+                <span className="text-sm text-muted">Nota</span>
                 <span className="min-w-0 truncate text-sm font-medium">
                   {memo}
                 </span>
               </div>
             )}
             <div className="flex items-center justify-between gap-4 px-4 py-3.5">
-              <span className="text-sm text-muted">Fee</span>
-              <span className="text-sm font-medium">Covered by the app</span>
+              <span className="text-sm text-muted">Comisión</span>
+              <span className="text-sm font-medium">La cubre la app</span>
             </div>
           </div>
           {error && (
@@ -225,7 +225,7 @@ export function SendModal({
             loading={sending}
             className="w-full py-3"
           >
-            {sending ? "Sending…" : "Confirm"}
+            {sending ? "Enviando…" : "Confirmar"}
           </Button>
         </div>
       )}
@@ -233,15 +233,15 @@ export function SendModal({
       {step === "done" && result && (
         <div className="flex flex-col gap-4">
           <EmptyState
-            title="Payment sent!"
-            description={`${amount} ${currency} went to ${middleTruncate(recipient.trim(), 6, 6)}. ${
+            title="¡Pago enviado!"
+            description={`${amount} ${currency} se enviaron a ${middleTruncate(recipient.trim(), 6, 6)}. ${
               result.status === "pending"
-                ? "It settles in a few seconds."
-                : "It's confirmed on the network."
-            } Your balance is already up to date.`}
+                ? "Se confirma en unos segundos."
+                : "Ya está confirmado en la red."
+            } Tu saldo ya está actualizado.`}
           />
           <Button onClick={onClose} variant="secondary" className="w-full py-3">
-            Done
+            Listo
           </Button>
         </div>
       )}

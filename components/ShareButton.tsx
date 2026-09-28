@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from './ui/Button';
+import { Icon } from './ui/Icon';
 
 export function ShareButton({ title, path }: { title: string; path: string }) {
   const [isShareSupported, setIsShareSupported] = useState(false);
@@ -43,6 +44,7 @@ export function ShareButton({ title, path }: { title: string; path: string }) {
 
   return (
     <Button onClick={handleShare} variant="secondary" className="w-full">
+      <Icon name={copied ? 'check' : isShareSupported ? 'share' : 'content_copy'} className="text-base" />
       {copied ? '¡Enlace copiado!' : (isShareSupported ? 'Compartir enlace' : 'Copiar enlace')}
     </Button>
   );

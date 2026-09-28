@@ -51,7 +51,7 @@ export function AccountModal({
               title={user.address}
               className="font-mono text-sm font-medium text-primary transition-colors hover:text-primary-hover"
             >
-              {copied ? "Copied ✓" : middleTruncate(user.address, 6, 6)}
+              {copied ? "Copiada ✓" : middleTruncate(user.address, 6, 6)}
             </button>
           </div>
         </div>
@@ -94,7 +94,7 @@ export function AccountModal({
           }}
           className="w-full rounded-xl border border-error-border py-2.5 text-sm font-semibold text-error transition-colors hover:bg-error-light"
         >
-          Log out
+          Cerrar sesión
         </button>
       </div>
 

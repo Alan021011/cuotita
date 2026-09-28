@@ -2,16 +2,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { usePollarAuth } from '../../../hooks/usePollarAuth';
-import { LoginButton } from '../../../components/LoginButton';
-import { Button } from '../../../components/ui/Button';
-import { Input } from '../../../components/ui/Input';
-import { Card } from '../../../components/ui/Card';
+import { usePollarAuth } from '@/hooks/usePollarAuth';
+import { useRampRate } from '@/hooks/useRampRate';
+import { LoginButton } from '@/components/LoginButton';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Icon } from '@/components/ui/Icon';
+import { Spinner } from '@/components/ui/Spinner';
 import { usePollar } from '@pollar/react';
 import { buildSessionMessage, POOL_AUTH_HEADER } from '@/lib/server-auth';
 import { BottomNav } from '@/components/BottomNav';
-import { CuotitaLogo } from '@/components/ui/CuotitaLogo';
+import { AppHeader, AppShell } from '@/components/AppHeader';
 
 export default function NewPoolPage() {
   const { user, isLoading } = usePollarAuth();
@@ -19,6 +20,9 @@ export default function NewPoolPage() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deadlineError, setDeadlineError] = useState<string | null>(null);
+  const [goal, setGoal] = useState('');
+  const rate = useRampRate(!!user);
+  const buyRate = rate.step === 'ready' ? (rate.buy?.rate ?? rate.sell?.rate ?? null) : null;
 
   function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
@@ -36,26 +40,26 @@ export default function NewPoolPage() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center p-10">
-        <div>Cargando...</div>
+      <div className="flex flex-1 items-center justify-center gap-3 p-10 text-muted">
+        <Spinner /> Cargando…
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col px-4 py-8">
-        <header className="flex items-center gap-2.5 pb-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <CuotitaLogo size={30} />
-            <span className="text-xl font-bold tracking-tight">Cuotita</span>
-          </Link>
-        </header>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-4">
-          <h1 className="text-2xl font-bold mb-2 text-center">Inicia sesión para crear un pool</h1>
+      <>
+        <AppHeader backHref="/" />
+        <AppShell className="items-center justify-center text-center">
+          <Icon name="group_add" className="text-5xl text-primary" />
+          <h1 className="font-display text-5xl leading-none text-foreground">
+            Crea el fondo
+            <span className="block text-primary">de tu parada</span>
+          </h1>
+          <p className="max-w-xs text-sm text-muted">Inicia sesión con Pollar para crear un fondo.</p>
           <LoginButton />
-        </div>
-      </div>
+        </AppShell>
+      </>
     );
   }
 
@@ -126,7 +130,7 @@ export default function NewPoolPage() {
 
       if (!res.ok) {
         const error = await res.json();
-        alert(error.error || 'No se pudo crear el pool');
+        alert(error.error || 'No se pudo crear el fondo');
         setIsSubmitting(false);
         return;
       }
@@ -140,65 +144,86 @@ export default function NewPoolPage() {
     }
   }
 
-  return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col gap-6 px-4 py-8 pb-24 lg:max-w-lg lg:py-12 lg:pb-28">
-      <header className="flex items-center justify-between gap-3 pb-4">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
-          <CuotitaLogo size={30} />
-          <h1 className="hidden min-w-0 truncate text-xl font-bold tracking-tight sm:block">
-            Crear un Pool
-          </h1>
-        </Link>
-        <LoginButton />
-      </header>
+  const goalBs = buyRate !== null && Number(goal) > 0 ? Number(goal) * buyRate : null;
 
-      <Card className="p-6">
-        <h1 className="text-2xl font-bold mb-6 text-center">Crear un pool nuevo</h1>
+  return (
+    <>
+      <AppHeader backHref="/" backLabel="Inicio" />
+      <AppShell>
+        <div className="space-y-1.5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-raised px-2.5 py-1 text-[11px] font-medium text-primary">
+            <Icon name="handshake" className="text-sm" />
+            Fondo de auxilio mutuo
+          </span>
+          <h1 className="pt-1 font-display text-5xl leading-none tracking-wide text-foreground">
+            Crea el fondo de tu parada
+          </h1>
+          <p className="text-sm leading-relaxed text-muted">
+            Tus compañeros aportan, los delegados aprueban, el fondo paga.
+          </p>
+        </div>
+
+        <div className="road-dash w-full" />
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium mb-1">
-              Nombre *
-            </label>
-            <Input id="name" name="name" required placeholder="Fondo de la parada" />
-          </div>
-          <div>
-            <label htmlFor="description" className="block text-sm font-medium mb-1">
-              Descripción
+          <Input id="name" name="name" label="Nombre del fondo *" required placeholder="Fondo de la parada" />
+
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="description" className="text-[11px] font-semibold uppercase tracking-wider text-muted">
+              ¿Para qué es este fondo? <span className="normal-case tracking-normal text-muted-light">(opcional)</span>
             </label>
             <textarea
               id="description"
               name="description"
-              placeholder="¿Para qué es este pool?"
-              className="w-full min-h-25 rounded-xl border bg-card px-4 py-2.5 text-sm text-foreground placeholder:text-muted-light focus:outline-none focus:ring-2 transition-shadow border-border focus:border-primary focus:ring-primary/25 resize-y"
+              rows={3}
+              placeholder="Ej. Repuestos de urgencia para los repartidores de la parada."
+              className="w-full resize-y rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-light focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
-          <div>
-            <label htmlFor="goalAmount" className="block text-sm font-medium mb-1">
-              Meta (USDC) *
-            </label>
-            <Input
-              id="goalAmount"
-              name="goalAmount"
-              type="number"
-              step="0.01"
-              min="0.01"
-              required
-              placeholder="100.00"
-            />
+
+          <Input
+            id="goalAmount"
+            name="goalAmount"
+            label="Meta (USDC) *"
+            type="number"
+            step="0.01"
+            min="0.01"
+            required
+            placeholder="100.00"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            className="font-mono text-lg font-bold"
+            hint={goalBs !== null ? `≈ Bs ${goalBs.toFixed(2)} al cambio de hoy` : undefined}
+          />
+
+          <Input
+            id="deadline"
+            name="deadline"
+            label="Fecha límite (opcional)"
+            type="datetime-local"
+            onChange={handleDateChange}
+            error={deadlineError ?? undefined}
+          />
+
+          <div className="flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/10 p-3.5">
+            <div className="mt-0.5 shrink-0 rounded-lg bg-primary/20 p-2 text-primary">
+              <Icon name="shield" className="text-xl" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold uppercase tracking-wide text-primary">Tú custodias el fondo</h4>
+              <p className="text-xs leading-snug text-foreground">
+                Los aportes llegan a tu wallet Pollar. Tú pagas los reclamos que aprueben los delegados de la parada.
+              </p>
+            </div>
           </div>
-          <div>
-            <label htmlFor="deadline" className="block text-sm font-medium mb-1">
-              Fecha límite
-            </label>
-            <Input id="deadline" name="deadline" type="datetime-local" onChange={handleDateChange} />
-            {deadlineError && <p className="text-sm text-red-500 mt-1">{deadlineError}</p>}
-          </div>
-          <Button type="submit" disabled={isSubmitting || !!deadlineError} className="mt-4 w-full">
-            {isSubmitting ? 'Creando...' : 'Crear pool'}
+
+          <Button type="submit" loading={isSubmitting} disabled={!!deadlineError} className="mt-2 h-12 w-full text-base uppercase tracking-wider">
+            {!isSubmitting && <Icon name="bolt" className="text-xl" />}
+            {isSubmitting ? 'Creando…' : 'Crear fondo'}
           </Button>
         </form>
-      </Card>
-      {user && <BottomNav />}
-    </main>
+      </AppShell>
+      <BottomNav />
+    </>
   );
 }

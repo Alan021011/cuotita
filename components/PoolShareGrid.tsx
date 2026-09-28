@@ -1,38 +1,63 @@
-import React from 'react';
+"use client";
+
+import { useState } from "react";
 import { PoolQRCode } from "./PoolQRCode";
 import { ShareButton } from "./ShareButton";
+import { Icon } from "./ui/Icon";
 import type { PoolWithTotal } from "@/lib/pools";
 
 interface PoolShareGridProps {
   pool: PoolWithTotal;
 }
 
+/** "Invita a tu parada": one QR (share link or direct-contribute link) + share button. */
 export function PoolShareGrid({ pool }: PoolShareGridProps) {
-  const isClosed = pool.status === 'closed';
+  const isClosed = pool.status === "closed";
+  const [mode, setMode] = useState<"share" | "contribute">("share");
+  const activeMode = isClosed ? "share" : mode;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+    <section className="rounded-2xl border border-border bg-surface p-4">
+      <div className="mb-4 flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-primary/30 bg-surface-raised text-primary">
+          <Icon name="qr_code_2" className="text-2xl" />
+        </div>
+        <div>
+          <h2 className="text-base font-bold leading-tight text-foreground">Invita a tu parada</h2>
+          <p className="mt-1 text-xs leading-snug text-muted">
+            {activeMode === "share"
+              ? "Que tus compañeros escaneen el QR para ver el fondo y sumarse."
+              : "Escaneando este QR van directo a aportar su cuota con Pollar."}
+          </p>
+        </div>
+      </div>
+
       {!isClosed && (
-        <div className="bg-surface border border-border rounded-2xl shadow-sm p-5 flex flex-col items-center h-full transition-all hover:shadow-md">
-          <h2 className="text-sm font-bold mb-3 text-foreground text-center uppercase tracking-wider">Contribucion</h2>
-          <PoolQRCode mode="contribute" poolId={pool.id} />
-          <div className="mt-auto pt-4 w-full flex items-center justify-center">
-            <p className="text-xs text-muted text-center max-w-48">
-              Escanea para contribuir usando Pollar.
-            </p>
-          </div>
+        <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-border bg-background p-1 text-xs font-semibold">
+          {(
+            [
+              ["share", "Ver el fondo"],
+              ["contribute", "Aportar directo"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => setMode(value)}
+              className={`rounded-lg py-2 transition-colors ${
+                activeMode === value ? "bg-surface-raised text-primary" : "text-muted hover:text-foreground"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       )}
 
-      <div className={`bg-surface border border-border rounded-2xl shadow-sm p-5 flex flex-col items-center h-full transition-all hover:shadow-md ${isClosed ? 'sm:col-span-2' : ''}`}>
-        <h2 className="text-sm font-bold mb-3 text-foreground text-center uppercase tracking-wider">Compartir Enlace</h2>
-        <PoolQRCode mode="share" poolId={pool.id} />
-        <div className="mt-auto pt-4 w-full flex items-center justify-center">
-          <div className="w-full max-w-40">
-            <ShareButton title={`Pool: ${pool.name}`} path={`/pool/${pool.id}`} />
-          </div>
-        </div>
+      <PoolQRCode mode={activeMode} poolId={pool.id} />
+
+      <div className="mt-4">
+        <ShareButton title={`Fondo: ${pool.name}`} path={`/pool/${pool.id}`} />
       </div>
-    </div>
+    </section>
   );
 }

@@ -111,9 +111,9 @@ export function ContributeButton({
 
   if (step === "confirming") {
     return (
-      <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
-        <span className="text-sm text-gray-700 text-center">
-          ¿Confirmar contribución de <span className="font-mono font-semibold">{amount} {currency}</span>?
+      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-raised px-4 py-3">
+        <span className="text-sm text-foreground text-center">
+          ¿Confirmar aporte de <span className="font-mono font-semibold">{amount} {currency}</span>?
         </span>
         <div className="flex gap-2">
           <Button onClick={() => void pay()} className="flex-1 py-2">
@@ -129,16 +129,16 @@ export function ContributeButton({
 
   if (step === "success") {
     return (
-      <div className="flex flex-col items-center gap-3 rounded-2xl border border-green-200 bg-green-50 px-4 py-3">
-        <span className="text-sm font-medium text-green-700">
-          Contribución enviada
+      <div className="flex flex-col items-center gap-3 rounded-2xl border border-success-border bg-success-light px-4 py-3">
+        <span className="text-sm font-medium text-success">
+          Aporte enviado
         </span>
       </div>
     );
   }
 
-  let buttonText = `Contribuir ${amount || '0'} ${currency}`;
-  if (!isAuthenticated) buttonText = "Inicia sesión para contribuir";
+  let buttonText = `Aportar ${amount || '0'} ${currency}`;
+  if (!isAuthenticated) buttonText = "Inicia sesión para aportar";
   else if (isLoading) buttonText = "Esperando tu saldo USDC...";
   else if (hasNoUSDC) buttonText = "Tu cuenta no tiene fondos en USDC";
   else if (step === "processing") buttonText = "Procesando...";
@@ -149,22 +149,22 @@ export function ContributeButton({
         onClick={() => setStep("confirming")}
         disabled={disabled || !isAuthenticated || !verified || isLoading || hasNoUSDC || overBalance || overMax || step === "processing" || amountNumber <= 0 || isNaN(amountNumber)}
         loading={step === "processing" || isLoading}
-        className="w-full"
+        className="h-12 w-full uppercase tracking-wider"
       >
         {buttonText}
       </Button>
       {overBalance && (
-        <p className="text-sm text-red-500 text-center">
+        <p className="text-sm text-error text-center">
           Saldo insuficiente ({Number(balance).toFixed(2)} {currency} disponibles)
         </p>
       )}
       {overMax && (
-        <p className="text-sm text-red-500 text-center">
+        <p className="text-sm text-error text-center">
           El monto excede el máximo permitido ({maxAllowed} {currency})
         </p>
       )}
       {step === "error" && (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+        <p className="rounded-xl border border-error-border bg-error-light px-3 py-2 text-sm text-error">
           {errorMessage}
         </p>
       )}
