@@ -3,7 +3,7 @@ import { createClaim, listClaims } from '@/lib/claims';
 import { getPoolWithTotal } from '@/lib/pools';
 import { requireSignedAddress } from '@/lib/server-auth';
 
-const ALLOWED_CATEGORIES = ['pantalla', 'freno', 'retrovisor', 'llanta', 'otro'];
+const ALLOWED_CATEGORIES = ['pantalla', 'freno', 'retrovisor', 'llanta', 'cadena', 'luces', 'otro'];
 /** Rough cap so a photo data URL can't blow up the row (~4MB before base64 overhead). */
 const MAX_PHOTO_LENGTH = 5_500_000;
 

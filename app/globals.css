@@ -1,84 +1,52 @@
 @import "tailwindcss";
 
 /*
- * Pollar design tokens. Every color in the app derives from these.
- * Light-first, like pollar.xyz (the brand look is white + Pollar blue).
- * Dark mode is opt-in: set <html data-theme="dark"> to enable it.
+ * Cuotita design tokens — "Asfalto" system generated in Google Stitch
+ * (project "Cuotita – Fondo de auxilio mutuo"). Night-shift delivery look:
+ * warm dark asphalt surfaces, reflective-vest amber as the only accent.
+ * Every color in the app derives from these.
  */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  --background: #15130f;
+  --foreground: #f3ede2;
 
-  --primary: #b45309;
-  --primary-hover: #92400e;
-  --primary-light: #fef3e2;
-  --primary-foreground: #ffffff;
+  --primary: #f59e0b;
+  --primary-hover: #fbbf24;
+  --primary-dim: #d97706;
+  --primary-light: color-mix(in srgb, #f59e0b 14%, #15130f);
+  --primary-foreground: #1a1200;
 
-  --surface: #f8fafc;
-  --surface-hover: #f1f5f9;
-  --border: #e5e7eb;
+  /* Cards sit on --surface; inputs/insets drop back to --background;
+     raised chips and hover states use --surface-raised. */
+  --surface: #211d17;
+  --surface-hover: #2b261e;
+  --surface-raised: #2b261e;
+  --border: #3a3329;
 
-  --muted: #6b7280;
-  --muted-light: #9ca3af;
+  --muted: #aba192;
+  --muted-light: #7d766d;
 
-  --error: #dc2626;
-  --error-light: #fef2f2;
-  --error-border: #fecaca;
+  --error: #f87171;
+  --error-light: color-mix(in srgb, #f87171 12%, #15130f);
+  --error-border: color-mix(in srgb, #f87171 40%, #15130f);
 
-  --success: #16a34a;
-  --success-light: #f0fdf4;
-  --success-border: #bbf7d0;
+  --success: #4ade80;
+  --success-light: color-mix(in srgb, #4ade80 12%, #15130f);
+  --success-border: color-mix(in srgb, #4ade80 40%, #15130f);
 
-  --warning: #d97706;
-  --warning-light: #fffbeb;
-  --warning-border: #fde68a;
+  --warning: #fbbf24;
+  --warning-light: color-mix(in srgb, #fbbf24 12%, #15130f);
+  --warning-border: color-mix(in srgb, #fbbf24 40%, #15130f);
 
-  /* Mascot (polar bear): brand illustration colors, same in both themes. */
+  /* Mascot (polar bear): brand illustration colors. */
   --mascot: #ffffff;
   --mascot-outline: #005db4;
   --mascot-shade: #cde4fa;
   --mascot-features: #0f2b46;
 
-  /* Official Pollar logo fill — stays Pollar's own blue regardless of our
-     --primary theming, so the "Powered by Pollar" mark stays recognizable. */
-  --logo: #005db4;
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  /* Warm mid-gray, not black — approved palette (option C). */
-  --background: #5b574f;
-  --foreground: #f5f1ea;
-
-  --primary: #f59e0b;
-  --primary-hover: #fbbf24;
-  --primary-light: #6b5a3a;
-  --primary-foreground: #1a1200;
-
-  /* Lighter than --background so cards/inputs visibly lift off the page. */
-  --surface: #726d63;
-  --surface-hover: #7d786d;
-  --border: #857f74;
-
-  --muted: #d0cabe;
-  --muted-light: #a39d92;
-
-  --error: #f87171;
-  --error-light: #6b4a45;
-  --error-border: #8a5f57;
-
-  --success: #4ade80;
-  --success-light: #4f5a45;
-  --success-border: #647256;
-
-  --warning: #fbbf24;
-  --warning-light: #6b5a3a;
-  --warning-border: #8a744a;
-
-  /* Near-white on dark, matching pollar-logo-dark. */
+  /* "Powered by Pollar" mark: near-white on asphalt. */
   --logo: var(--foreground);
 }
 
@@ -93,6 +61,8 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-surface: var(--surface);
   --color-surface-hover: var(--surface-hover);
+  --color-surface-raised: var(--surface-raised);
+  --color-primary-dim: var(--primary-dim);
   --color-border: var(--border);
   --color-muted: var(--muted);
   --color-muted-light: var(--muted-light);
@@ -109,12 +79,47 @@
   --font-sans: var(--font-plex-sans);
   --font-mono: var(--font-plex-mono);
   --font-display: var(--font-display);
+  --font-heading: var(--font-oswald), "Oswald", Impact, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-plex-sans), -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Material Symbols (the icon set Stitch designs with), see components/ui/Icon.tsx. */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Amber glow for highlighted cards (balance, fund hero) and the nav FAB. */
+.glow-amber {
+  box-shadow: 0 0 25px -5px rgb(245 158 11 / 0.15), inset 0 1px 0 rgb(245 158 11 / 0.25);
+}
+.glow-fab {
+  box-shadow: 0 0 20px 2px rgb(245 158 11 / 0.35);
+}
+
+/* Static dashed road marking used as a section divider. */
+.road-dash {
+  height: 2px;
+  background-image: repeating-linear-gradient(90deg, var(--primary) 0 8px, transparent 8px 16px);
+  opacity: 0.4;
+}
+
+/* Diagonal stripes over the fund progress fill, like a hazard barrier. */
+.hazard-stripes {
+  background-image: linear-gradient(45deg, rgb(0 0 0 / 0.25) 25%, transparent 25%, transparent 50%, rgb(0 0 0 / 0.25) 50%, rgb(0 0 0 / 0.25) 75%, transparent 75%, transparent);
+  background-size: 12px 12px;
+  opacity: 0.4;
 }
 
 /* Big splashy headlines only (hero titles) — not the small nav/modal/card
