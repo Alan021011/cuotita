@@ -22,6 +22,8 @@ const CATEGORIES: { value: string; label: string; icon: string }[] = [
   { value: "freno", label: "Freno / embrague", icon: "build_circle" },
   { value: "retrovisor", label: "Retrovisor / plásticos", icon: "flip" },
   { value: "llanta", label: "Llanta / aro", icon: "tire_repair" },
+  { value: "cadena", label: "Cadena / piñón", icon: "settings" },
+  { value: "luces", label: "Luces / batería", icon: "light" },
   { value: "otro", label: "Otro daño material", icon: "more_horiz" },
 ];
 

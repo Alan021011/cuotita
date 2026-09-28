@@ -8,7 +8,7 @@ import { formatAmount } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { ReceiveModal } from "@/components/ReceiveModal";
 import { SendModal } from "@/components/SendModal";
-import { RampQuoteModal } from "@/components/RampQuoteModal";
+import { EarnModal } from "@/components/EarnModal";
 
 function Action({
   icon,
@@ -50,11 +50,11 @@ function Action({
 /** The wallet card: balance in USDC, its Bs value, and the money actions. */
 export function BalanceCard() {
   const { balance, currency, isLoading, error, refresh } = useBalance();
-  const { isAuthenticated, tx } = usePollar();
+  const { isAuthenticated, tx, openRampModal, wallet } = usePollar();
   const rate = useRampRate(isAuthenticated);
   const [receiveOpen, setReceiveOpen] = useState(false);
   const [sendOpen, setSendOpen] = useState(false);
-  const [rampOpen, setRampOpen] = useState(false);
+  const [earnOpen, setEarnOpen] = useState(false);
 
   useEffect(() => {
     if (tx.step === "success" || tx.step === "submitted") {
@@ -107,15 +107,16 @@ export function BalanceCard() {
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-2.5 border-t border-border pt-3">
+      <div className="grid grid-cols-2 gap-2.5 border-t border-border pt-3">
         <Action icon="arrow_downward" label="Recibir" hint="Tu dirección" onClick={() => setReceiveOpen(true)} />
         <Action icon="arrow_upward" label="Enviar" hint="A otra wallet" onClick={() => setSendOpen(true)} />
-        <Action icon="account_balance" label="Cargar con Bs" hint="Desde tu banco" onClick={() => setRampOpen(true)} accent />
+        <Action icon="account_balance" label="Cargar con Bs" hint="Desde tu banco" onClick={() => openRampModal()} accent />
+        <Action icon="savings" label="Ganar intereses" hint="Blend" onClick={() => setEarnOpen(true)} accent />
       </div>
 
       <ReceiveModal open={receiveOpen} onClose={() => setReceiveOpen(false)} />
       <SendModal open={sendOpen} onClose={() => setSendOpen(false)} />
-      <RampQuoteModal open={rampOpen} onClose={() => setRampOpen(false)} />
+      {wallet && <EarnModal open={earnOpen} onClose={() => setEarnOpen(false)} address={wallet.address} />}
     </section>
   );
 }
