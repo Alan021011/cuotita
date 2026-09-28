@@ -1,16 +1,34 @@
 import { createHash } from "crypto";
-import { Keypair, rpc, Transaction, Networks, Operation } from "@stellar/stellar-sdk";
+import { Keypair, Transaction, Networks, Operation } from "@stellar/stellar-sdk";
 
-// SDF doesn't run a free public Soroban RPC for mainnet (only testnet), so
-// 'soroban-mainnet.stellar.org' was never a real host — it doesn't resolve.
-// mainnet.sorobanrpc.com is a real, community-run public mainnet endpoint.
-const RPC_URL = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
-  ? 'https://mainnet.sorobanrpc.com'
-  : 'https://soroban-testnet.stellar.org';
+// Horizon (SDF's own indexer) — used instead of the Soroban RPC for looking
+// up a transaction's status. The community-run mainnet Soroban RPC
+// (mainnet.sorobanrpc.com) indexes fresh transactions noticeably slower than
+// Horizon in practice — verified deposits that Horizon already showed as
+// successful were still coming back NOT_FOUND from that RPC well past our
+// retry window. Horizon has always indexed classic *and* Soroban
+// transactions, so it works for both verifyTxOnRPC and verifyEarnTxOnRPC.
+const HORIZON_URL = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
+  ? 'https://horizon.stellar.org'
+  : 'https://horizon-testnet.stellar.org';
 
 const NETWORK_PASSPHRASE = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
   ? Networks.PUBLIC
   : Networks.TESTNET;
+
+type HorizonTxLookup =
+  | { status: 'SUCCESS'; envelopeXdr: string }
+  | { status: 'FAILED' }
+  | { status: 'NOT_FOUND' };
+
+async function fetchTransactionFromHorizon(hash: string): Promise<HorizonTxLookup> {
+  const res = await fetch(`${HORIZON_URL}/transactions/${hash}`);
+  if (res.status === 404) return { status: 'NOT_FOUND' };
+  if (!res.ok) throw new Error(`Horizon error ${res.status}`);
+  const json = await res.json();
+  if (!json.successful) return { status: 'FAILED' };
+  return { status: 'SUCCESS', envelopeXdr: json.envelope_xdr };
+}
 
 export const STELLAR_EXPERT_URL = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet'
   ? 'https://stellar.expert/explorer/public'
@@ -47,8 +65,7 @@ export async function verifyTxOnRPC(
   expectedFrom?: string | null
 ): Promise<VerificationResult> {
   try {
-    const server = new rpc.Server(RPC_URL);
-    const txRes = await server.getTransaction(hash);
+    const txRes = await fetchTransactionFromHorizon(hash);
 
     if (txRes.status === 'NOT_FOUND') {
       return { valid: false, error: "Transaction does not exist on RPC or is too old" };
@@ -60,7 +77,7 @@ export async function verifyTxOnRPC(
 
     // Parse XDR
     const tx = new Transaction(txRes.envelopeXdr, NETWORK_PASSPHRASE);
-    
+
     let memoValue = '';
     if (tx.memo && tx.memo.value) {
       memoValue = typeof tx.memo.value === 'string' 
@@ -114,7 +131,7 @@ export async function verifyTxOnRPC(
     };
   } catch (err) {
     console.error("Error verifyTxOnRPC:", err);
-    return { valid: false, error: "Connection or parsing error with Stellar RPC" };
+    return { valid: false, error: "Connection or parsing error with Stellar Horizon" };
   }
 }
 
@@ -132,8 +149,7 @@ export async function verifyEarnTxOnRPC(
   expectedAddress: string
 ): Promise<VerificationResult> {
   try {
-    const server = new rpc.Server(RPC_URL);
-    const txRes = await server.getTransaction(hash);
+    const txRes = await fetchTransactionFromHorizon(hash);
 
     if (txRes.status === 'NOT_FOUND') {
       return { valid: false, error: "Transaction does not exist on RPC or is too old" };
@@ -150,7 +166,7 @@ export async function verifyEarnTxOnRPC(
     return { valid: true, from: tx.source };
   } catch (err) {
     console.error("Error verifyEarnTxOnRPC:", err);
-    return { valid: false, error: "Connection or parsing error with Stellar RPC" };
+    return { valid: false, error: "Connection or parsing error with Stellar Horizon" };
   }
 }
 

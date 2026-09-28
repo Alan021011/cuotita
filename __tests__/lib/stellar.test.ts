@@ -1,21 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { verifyTxOnRPC } from '../../lib/stellar';
-import { rpc, Transaction } from '@stellar/stellar-sdk';
+import { Transaction } from '@stellar/stellar-sdk';
 
 vi.mock('@stellar/stellar-sdk', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@stellar/stellar-sdk')>();
   return {
     ...actual,
-    rpc: {
-      Server: vi.fn().mockImplementation(function () {
-        return { getTransaction: vi.fn() };
-      })
-    },
     Transaction: vi.fn().mockImplementation(function () {
       return {};
     })
   };
 });
+
+/** Builds a fake fetch() Response for a Horizon /transactions/{hash} call. */
+function horizonResponse(body: { status: number; successful?: boolean; envelope_xdr?: string }) {
+  if (body.status === 404) {
+    return { status: 404, ok: false, json: async () => ({}) } as Response;
+  }
+  return {
+    status: 200,
+    ok: true,
+    json: async () => ({ successful: body.successful, envelope_xdr: body.envelope_xdr }),
+  } as Response;
+}
 
 describe('verifyTxOnRPC', () => {
   const MOCK_HASH = 'mock_hash';
@@ -25,18 +32,16 @@ describe('verifyTxOnRPC', () => {
   const MOCK_FROM = 'G_CONTRIBUTOR';
   const USDC_ISSUER = 'GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5';
 
-  let mockGetTransaction: ReturnType<typeof vi.fn>;
+  let mockFetch: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetTransaction = vi.fn();
-    (rpc.Server as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
-      return { getTransaction: mockGetTransaction };
-    });
+    mockFetch = vi.fn();
+    vi.stubGlobal('fetch', mockFetch);
   });
 
   it('returns error if transaction does not exist (NOT_FOUND)', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'NOT_FOUND' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 404 }));
 
     const result = await verifyTxOnRPC(MOCK_HASH, MOCK_DESTINATION, MOCK_AMOUNT, MOCK_POOL_ID);
     expect(result.valid).toBe(false);
@@ -44,7 +49,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns error if transaction failed on-chain', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'FAILED' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: false }));
 
     const result = await verifyTxOnRPC(MOCK_HASH, MOCK_DESTINATION, MOCK_AMOUNT, MOCK_POOL_ID);
     expect(result.valid).toBe(false);
@@ -52,7 +57,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns error if memo does not match poolId', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'SUCCESS', envelopeXdr: 'mock-xdr' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: true, envelope_xdr: 'mock-xdr' }));
     (Transaction as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return {
         memo: { type: 'text', value: 'wrong-pool' },
@@ -66,7 +71,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns error if asset is not USDC', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'SUCCESS', envelopeXdr: 'mock-xdr' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: true, envelope_xdr: 'mock-xdr' }));
     (Transaction as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return {
         memo: { type: 'text', value: MOCK_POOL_ID },
@@ -92,7 +97,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns valid with on-chain from for a correct USDC transaction', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'SUCCESS', envelopeXdr: 'mock-xdr' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: true, envelope_xdr: 'mock-xdr' }));
     (Transaction as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return {
         source: 'G_TRANSACTION_SOURCE',
@@ -120,7 +125,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns error if recipient does not match', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'SUCCESS', envelopeXdr: 'mock-xdr' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: true, envelope_xdr: 'mock-xdr' }));
     (Transaction as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return {
         memo: { type: 'text', value: MOCK_POOL_ID },
@@ -146,7 +151,7 @@ describe('verifyTxOnRPC', () => {
   });
 
   it('returns error if amount does not match', async () => {
-    mockGetTransaction.mockResolvedValueOnce({ status: 'SUCCESS', envelopeXdr: 'mock-xdr' });
+    mockFetch.mockResolvedValueOnce(horizonResponse({ status: 200, successful: true, envelope_xdr: 'mock-xdr' }));
     (Transaction as unknown as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return {
         memo: { type: 'text', value: MOCK_POOL_ID },
