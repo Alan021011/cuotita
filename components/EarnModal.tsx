@@ -93,6 +93,18 @@ async function recordMovement(
   return false;
 }
 
+/**
+ * `txInsufficientFee` — a standard Stellar result code, not specific to
+ * Pollar or Blend — means the network's minimum fee moved between when the
+ * SDK priced the transaction and when it landed. Seen in practice as
+ * intermittent: the exact same deposit/withdraw can fail once and succeed
+ * on an immediate retry, because the retry re-prices the fee from scratch.
+ */
+function looksLikeFeeGlitch(result: { message?: string; details?: string; resultCode?: string }): boolean {
+  const text = [result.resultCode, result.message, result.details].filter(Boolean).join(" ");
+  return text.includes("txInsufficientFee");
+}
+
 export function EarnModal({
   open,
   onClose,
@@ -115,6 +127,7 @@ export function EarnModal({
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
   const [savingHistory, setSavingHistory] = useState(false);
+  const [retrying, setRetrying] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
 
@@ -179,10 +192,23 @@ export function EarnModal({
     setWarning(null);
     try {
       const fn = mode === "deposit" ? earnDeposit : earnWithdraw;
-      const result = await fn({ provider: opportunity.provider, opportunity: opportunity.id, amount });
+      const args = { provider: opportunity.provider, opportunity: opportunity.id, amount };
+
+      let result = await fn(args);
+      let attempts = 1;
+      while (result.status === "error" && looksLikeFeeGlitch(result) && attempts < 3) {
+        setRetrying(true);
+        await new Promise((r) => setTimeout(r, 1500));
+        result = await fn(args);
+        attempts++;
+      }
+      setRetrying(false);
 
       if (result.status === "error") {
-        setActionError(result.message ?? result.details ?? "La operación falló.");
+        const friendly = looksLikeFeeGlitch(result)
+          ? "La red está congestionada ahora mismo y rechazó la comisión. Probá de nuevo en un momento."
+          : (result.message ?? result.details ?? "La operación falló.");
+        setActionError(friendly);
         return;
       }
       if (!result.hash) {
@@ -215,6 +241,7 @@ export function EarnModal({
     } finally {
       setBusy(false);
       setSavingHistory(false);
+      setRetrying(false);
     }
   }
 
@@ -329,9 +356,11 @@ export function EarnModal({
             <Button onClick={() => void submit()} disabled={!amountValid} loading={busy} className="w-full py-3">
               {savingHistory
                 ? "Confirmando en la red…"
-                : mode === "deposit"
-                  ? "Depositar"
-                  : "Retirar"}
+                : retrying
+                  ? "Reintentando…"
+                  : mode === "deposit"
+                    ? "Depositar"
+                    : "Retirar"}
             </Button>
 
             <div className="flex flex-col gap-2">
