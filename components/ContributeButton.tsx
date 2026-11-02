@@ -5,7 +5,7 @@ import type { WalletBalanceRecord } from "@pollar/core";
 import { usePollar } from "@pollar/react";
 import { Button } from "./ui/Button";
 import { useBalance } from "../hooks/useBalance";
-import { currencyOf, type PaymentAsset } from "../lib/payments";
+import { currencyOf, type PaymentAsset, COSIGN_PENDING_MESSAGE, isSubmitted } from "../lib/payments";
 
 function contributionAssetFrom(record: WalletBalanceRecord | null): PaymentAsset | null {
   if (
@@ -89,6 +89,13 @@ export function ContributeButton({
         setErrorMessage(msg);
         setStep("error");
         onError?.(msg);
+        return;
+      }
+
+      if (!isSubmitted(result)) {
+        setErrorMessage(COSIGN_PENDING_MESSAGE);
+        setStep("error");
+        onError?.(COSIGN_PENDING_MESSAGE);
         return;
       }
 

@@ -4,12 +4,10 @@ import { useState } from "react";
 import { usePollar } from "@pollar/react";
 import { Button } from "@/components/ui/Button";
 import { useBalance } from "@/hooks/useBalance";
-import {
-  currencyOf,
+import { currencyOf,
   paymentAssetFrom,
   type PaymentAsset,
-  type PaymentResult,
-} from "@/lib/payments";
+  type PaymentResult, COSIGN_PENDING_MESSAGE, isSubmitted } from "@/lib/payments";
 
 export type { PaymentAsset, PaymentResult };
 
@@ -70,6 +68,10 @@ export function PayButton({
             result.details ??
             "The payment didn't go through. Check the address and your balance, then try again.",
         });
+        return;
+      }
+      if (!isSubmitted(result)) {
+        setState({ step: "error", message: COSIGN_PENDING_MESSAGE });
         return;
       }
       // BalanceCard refreshes on its own; it watches the SDK's global tx state.

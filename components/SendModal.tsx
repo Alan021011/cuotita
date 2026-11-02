@@ -8,12 +8,10 @@ import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useBalance } from "@/hooks/useBalance";
 import { formatAmount, middleTruncate } from "@/lib/format";
-import {
-  currencyOf,
+import { currencyOf,
   looksLikeAddress,
   paymentAssetFrom,
-  type PaymentResult,
-} from "@/lib/payments";
+  type PaymentResult, COSIGN_PENDING_MESSAGE, isSubmitted } from "@/lib/payments";
 
 type Step = "amount" | "details" | "review" | "done";
 
@@ -79,6 +77,8 @@ export function SendModal({
             res.details ??
             "El pago no se completó. Revisa la dirección y tu saldo, y vuelve a intentar."
         );
+      } else if (!isSubmitted(res)) {
+        setError(COSIGN_PENDING_MESSAGE);
       } else {
         setResult(res);
         setStep("done");

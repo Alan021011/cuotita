@@ -35,3 +35,14 @@ export function currencyOf(asset: PaymentAsset): string {
 export function looksLikeAddress(value: string): boolean {
   return /^G[A-Z2-7]{55}$/.test(value.trim());
 }
+
+/**
+ * Pollar can hand a payment back as `cosign_pending` when an app approves
+ * transactions by hand. Cuotita never does, so a submitted payment is always
+ * `success` or `pending` and carries a hash.
+ */
+export function isSubmitted(outcome: SubmitOutcome): outcome is PaymentResult {
+  return outcome.status === "success" || outcome.status === "pending";
+}
+
+export const COSIGN_PENDING_MESSAGE = "El pago quedó pendiente de aprobación y no se envió.";

@@ -6,7 +6,7 @@ import { usePollar } from "@pollar/react";
 import { Button } from "./ui/Button";
 import { useBalance } from "../hooks/useBalance";
 import { useAuthProof } from "../hooks/useAuthProof";
-import { currencyOf, type PaymentAsset } from "../lib/payments";
+import { currencyOf, type PaymentAsset, COSIGN_PENDING_MESSAGE, isSubmitted } from "../lib/payments";
 import { POOL_AUTH_HEADER } from "../lib/server-auth";
 
 function payoutAssetFrom(record: WalletBalanceRecord | null): PaymentAsset | null {
@@ -69,6 +69,12 @@ export function PayoutButton({
         setErrorMessage(msg);
         setStep("error");
         onError?.(msg);
+        return;
+      }
+      if (!isSubmitted(result)) {
+        setErrorMessage(COSIGN_PENDING_MESSAGE);
+        setStep("error");
+        onError?.(COSIGN_PENDING_MESSAGE);
         return;
       }
       if (!result.hash) {
