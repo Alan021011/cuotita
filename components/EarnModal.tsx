@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { useAuthProof } from "@/hooks/useAuthProof";
 import { useRampRate } from "@/hooks/useRampRate";
+import { COSIGN_PENDING_MESSAGE, isSubmitted } from "@/lib/payments";
 import { POOL_AUTH_HEADER } from "@/lib/server-auth";
 import { STELLAR_EXPERT_URL } from "@/lib/stellar";
 import { formatAmount, middleTruncate } from "@/lib/format";
@@ -212,6 +213,10 @@ export function EarnModal({
           ? "La red está congestionada ahora mismo y rechazó la comisión. Probá de nuevo en un momento."
           : (result.message ?? result.details ?? "La operación falló.");
         setActionError(friendly);
+        return;
+      }
+      if (!isSubmitted(result)) {
+        setActionError(COSIGN_PENDING_MESSAGE);
         return;
       }
       if (!result.hash) {

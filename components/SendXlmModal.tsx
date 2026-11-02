@@ -5,7 +5,7 @@ import { usePollar } from "@pollar/react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
-import { looksLikeAddress } from "@/lib/payments";
+import { looksLikeAddress, COSIGN_PENDING_MESSAGE, isSubmitted } from "@/lib/payments";
 
 /**
  * Wallet-to-wallet native XLM transfer — separate from SendModal (which
@@ -52,6 +52,8 @@ export function SendXlmModal({
       });
       if (res.status === "error") {
         setError(res.message ?? res.details ?? "El envío falló. Revisá la dirección y tu saldo.");
+      } else if (!isSubmitted(res)) {
+        setError(COSIGN_PENDING_MESSAGE);
       } else {
         setDone(res.hash ?? "ok");
       }
