@@ -263,7 +263,7 @@ function Simulator({ onStart }: { onStart: () => void }) {
         </div>
         <button
           onClick={onStart}
-          className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg text-primary-foreground shadow-[0_0_24px_rgb(245_158_11/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
+          className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-primary text-lg text-primary-foreground shadow-[0_0_24px_rgb(59_130_246/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
         >
           Crear este pozo con mis camaradas
           <Icon name="arrow_forward" className="text-xl" />
@@ -284,7 +284,7 @@ export function Landing({ login }: { login: () => void }) {
             <img src="/logo.png" alt="" className="h-9 w-9 object-contain" />
             <span className="flex flex-col">
               <span className={`${H} text-lg font-bold leading-none text-primary-hover`}>Cuotita</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Auxilio mutuo motos</span>
+              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Fondos colectivos con reglas claras</span>
             </span>
           </a>
           <nav className="hidden items-center gap-4 lg:flex">
@@ -303,7 +303,7 @@ export function Landing({ login }: { login: () => void }) {
             </button>
             <button
               onClick={login}
-              className={`${H} inline-flex h-12 items-center rounded-full bg-primary px-6 text-base text-primary-foreground shadow-[0_0_16px_rgb(245_158_11/0.25)] transition-all hover:bg-primary-hover active:scale-95`}
+              className={`${H} inline-flex h-12 items-center rounded-full bg-primary px-6 text-base text-primary-foreground shadow-[0_0_16px_rgb(59_130_246/0.25)] transition-all hover:bg-primary-hover active:scale-95`}
             >
               Unirme al pozo
             </button>
@@ -313,7 +313,7 @@ export function Landing({ login }: { login: () => void }) {
 
       <main className="pt-20">
         {/* Hero */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#100e0a] via-background to-[#1d1b17] pb-24 pt-9 md:pb-32">
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#070a14] via-background to-surface pb-24 pt-9 md:pb-32">
           <div className="pointer-events-none absolute -top-40 left-1/2 h-[340px] w-[720px] -translate-x-1/2 rounded-full bg-primary/10 blur-[130px]" />
           <div className="pointer-events-none absolute -right-32 top-1/3 h-80 w-80 rounded-full bg-success/10 blur-[110px]" />
           <div className="relative z-10 mx-auto max-w-7xl px-4 md:px-6">
@@ -323,7 +323,7 @@ export function Landing({ login }: { login: () => void }) {
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
               </span>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-success">
-                Red solidaria de motorepartidores · Bolivia
+                Fondos colectivos con reglas claras · Bolivia
               </span>
             </div>
 
@@ -332,15 +332,18 @@ export function Landing({ login }: { login: () => void }) {
                 <h1 className={`${H} text-5xl font-bold leading-[1.05] md:text-6xl lg:text-7xl`}>
                   Aportamos hoy,
                   <br />
-                  <span className="text-primary drop-shadow-[0_0_24px_rgba(245,158,11,0.35)]">reparamos mañana.</span>
+                  <span className="text-primary drop-shadow-[0_0_24px_rgba(59,130,246,0.35)]">reparamos mañana.</span>
                 </h1>
                 <p className="max-w-2xl text-[17px] leading-relaxed text-muted">
                   Tu moto es tu herramienta de trabajo y no puede frenar. Un fondo colectivo entre repartidores para cubrir averías — pinchazos, frenos, pantallas rotas y choques leves — sin bancos, sin letra chica y aprobado por tus propios camaradas de ruta.
                 </p>
+                <p className="max-w-2xl text-[13px] leading-relaxed text-muted-light">
+                  Este es el primer grupo que construimos con Cuotita — el mismo motor sirve para cualquier organización que maneje dinero en común bajo reglas acordadas: gremios, cooperativas, juntas vecinales, asociaciones.
+                </p>
                 <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center">
                   <button
                     onClick={login}
-                    className={`${H} inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-9 text-lg text-primary-foreground shadow-[0_0_24px_rgb(245_158_11/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
+                    className={`${H} inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-9 text-lg text-primary-foreground shadow-[0_0_24px_rgb(59_130_246/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
                   >
                     Comenzar gratis
                     <Icon name="arrow_forward" className="text-xl" />
@@ -408,7 +411,7 @@ export function Landing({ login }: { login: () => void }) {
         </section>
 
         {/* Coberturas */}
-        <section id="coberturas" className="scroll-mt-20 bg-[#1d1b17] py-20">
+        <section id="coberturas" className="scroll-mt-20 bg-surface py-20">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <div className="text-center">
               <Eyebrow>Catálogo de auxilio solidario</Eyebrow>
@@ -474,7 +477,7 @@ export function Landing({ login }: { login: () => void }) {
             </div>
 
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:col-span-7">
-              <div className="flex flex-col gap-4 rounded-2xl bg-[#100e0a] p-6">
+              <div className="flex flex-col gap-4 rounded-2xl bg-[#070a14] p-6">
                 <div className="flex items-center justify-between">
                   <h3 className={`${H} text-lg font-semibold text-muted`}>El grupo de WhatsApp informal</h3>
                   <Icon name="cancel" className="text-2xl text-error" />
@@ -506,7 +509,7 @@ export function Landing({ login }: { login: () => void }) {
                     </li>
                   ))}
                 </ul>
-                <p className="mt-auto rounded-full bg-[#100e0a] py-3 text-center text-[11px] font-semibold text-success">
+                <p className="mt-auto rounded-full bg-[#070a14] py-3 text-center text-[11px] font-semibold text-success">
                   Hermandad y confianza técnica
                 </p>
               </div>
@@ -522,7 +525,7 @@ export function Landing({ login }: { login: () => void }) {
         </section>
 
         {/* Talleres (roadmap) */}
-        <section id="talleres" className="scroll-mt-20 bg-[#100e0a] py-20">
+        <section id="talleres" className="scroll-mt-20 bg-[#070a14] py-20">
           <div className="mx-auto max-w-7xl px-4 md:px-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
@@ -581,7 +584,7 @@ export function Landing({ login }: { login: () => void }) {
         {/* CTA final */}
         <section className="px-4 pb-20 md:px-6">
           <div className="mx-auto flex max-w-5xl flex-col items-center gap-5 rounded-2xl bg-surface px-6 py-14 text-center">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_0_24px_rgb(245_158_11/0.4)]">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_0_24px_rgb(59_130_246/0.4)]">
               <Icon name="two_wheeler" className="text-3xl" />
             </span>
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-success">Unidos en el asfalto boliviano</p>
@@ -594,13 +597,13 @@ export function Landing({ login }: { login: () => void }) {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 onClick={login}
-                className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-lg text-primary-foreground shadow-[0_0_24px_rgb(245_158_11/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
+                className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-lg text-primary-foreground shadow-[0_0_24px_rgb(59_130_246/0.3)] transition-all hover:bg-primary-hover active:scale-95`}
               >
                 Comenzar gratis con mi grupo <Icon name="arrow_forward" className="text-xl" />
               </button>
               <a
                 href="#como-funciona"
-                className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-[#100e0a] px-6 text-lg text-foreground transition-colors hover:bg-surface-raised`}
+                className={`${H} flex h-14 items-center justify-center gap-2 rounded-full bg-[#070a14] px-6 text-lg text-foreground transition-colors hover:bg-surface-raised`}
               >
                 <Icon name="play_circle" className="text-xl text-success" /> Ver cómo funciona
               </a>
@@ -615,14 +618,14 @@ export function Landing({ login }: { login: () => void }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#100e0a] pt-14">
+      <footer className="bg-[#070a14] pt-14">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-4 md:grid-cols-2 md:px-6 lg:grid-cols-4">
           <div className="flex flex-col gap-3">
             <p className={`${H} flex items-center gap-2 text-2xl font-semibold`}>
               <span className="h-2.5 w-2.5 rounded-full bg-success" /> Cuotita
             </p>
             <p className="text-[15px] leading-relaxed text-muted">
-              Fondo de auxilio mutuo, transparente, para motorepartidores de delivery en Bolivia.
+              Motor de fondos colectivos con reglas claras y pagos verificados on-chain. Primer grupo: motorepartidores de delivery en Bolivia.
             </p>
           </div>
           <div>

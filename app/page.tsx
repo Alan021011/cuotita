@@ -6,6 +6,7 @@ import { BalanceCard } from "@/components/BalanceCard";
 import { BottomNav } from "@/components/BottomNav";
 import { AppHeader, AppShell } from "@/components/AppHeader";
 import { PoolCard } from "@/components/PoolCard";
+import { WebDashboard } from "@/components/WebDashboard";
 import { Landing } from "@/components/Landing";
 import { Icon } from "@/components/ui/Icon";
 import { usePollarAuth } from "@/hooks/usePollarAuth";
@@ -41,6 +42,8 @@ function Dashboard({ address }: { address: string }) {
 
   return (
     <>
+      <WebDashboard pools={pools} open={open} />
+      <div className="lg:hidden">
       <AppHeader />
       <AppShell>
         <BalanceCard />
@@ -111,6 +114,7 @@ function Dashboard({ address }: { address: string }) {
         </section>
       </AppShell>
       <BottomNav />
+      </div>
     </>
   );
 }
