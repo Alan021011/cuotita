@@ -64,8 +64,11 @@ export function PayoutButton({
         { memo: { type: "text", value: claimId } }
       );
 
-      if (result.status === "error") {
-        const msg = result.message ?? result.details ?? "El pago falló.";
+      if (result.status === "error" || result.status === "cosign_pending") {
+        const msg =
+          result.status === "cosign_pending"
+            ? "El pago necesita una firma adicional — contacta al organizador."
+            : result.message ?? result.details ?? "El pago falló.";
         setErrorMessage(msg);
         setStep("error");
         onError?.(msg);

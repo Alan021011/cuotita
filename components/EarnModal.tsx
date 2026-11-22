@@ -207,6 +207,10 @@ export function EarnModal({
       }
       setRetrying(false);
 
+      if (result.status === "cosign_pending") {
+        setActionError("La operación necesita una firma adicional.");
+        return;
+      }
       if (result.status === "error") {
         const friendly = looksLikeFeeGlitch(result)
           ? "La red está congestionada ahora mismo y rechazó la comisión. Probá de nuevo en un momento."

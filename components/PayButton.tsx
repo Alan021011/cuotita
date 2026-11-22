@@ -62,13 +62,15 @@ export function PayButton({
         amount,
         asset: payAsset,
       });
-      if (result.status === "error") {
+      if (result.status === "error" || result.status === "cosign_pending") {
         setState({
           step: "error",
           message:
-            result.message ??
-            result.details ??
-            "The payment didn't go through. Check the address and your balance, then try again.",
+            result.status === "cosign_pending"
+              ? "The payment needs an additional signature — contact the organizer."
+              : result.message ??
+                result.details ??
+                "The payment didn't go through. Check the address and your balance, then try again.",
         });
         return;
       }
