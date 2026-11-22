@@ -73,11 +73,13 @@ export function SendModal({
         { destination: recipient.trim(), amount, asset: payAsset },
         memo ? { memo: { type: "text", value: memo } } : undefined
       );
-      if (res.status === "error") {
+      if (res.status === "error" || res.status === "cosign_pending") {
         setError(
-          res.message ??
-            res.details ??
-            "El pago no se completó. Revisa la dirección y tu saldo, y vuelve a intentar."
+          res.status === "cosign_pending"
+            ? "El pago necesita una firma adicional — contacta al organizador."
+            : res.message ??
+                res.details ??
+                "El pago no se completó. Revisa la dirección y tu saldo, y vuelve a intentar."
         );
       } else {
         setResult(res);

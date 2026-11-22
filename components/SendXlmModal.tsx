@@ -50,8 +50,12 @@ export function SendXlmModal({
         amount,
         asset: { type: "native" },
       });
-      if (res.status === "error") {
-        setError(res.message ?? res.details ?? "El envío falló. Revisá la dirección y tu saldo.");
+      if (res.status === "error" || res.status === "cosign_pending") {
+        setError(
+          res.status === "cosign_pending"
+            ? "El envío necesita una firma adicional."
+            : res.message ?? res.details ?? "El envío falló. Revisá la dirección y tu saldo."
+        );
       } else {
         setDone(res.hash ?? "ok");
       }

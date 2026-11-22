@@ -2,21 +2,31 @@
 
 import { useEffect, useState } from "react";
 import { usePollar } from "@pollar/react";
-import type { RampQuote } from "@pollar/core";
 
 /** A small reference amount used only to ask Pollar for a representative rate. */
-const REFERENCE_BOB = 10;
+const REFERENCE_BOB = "10";
+const REFERENCE_USDC = "10";
+
+interface SimpleRate {
+  /** Bs per 1 unit of the asset (USDC). */
+  rate: number;
+}
 
 type RateState =
   | { step: "loading" }
   | { step: "unavailable" }
-  | { step: "ready"; buy: RampQuote | null; sell: RampQuote | null };
+  | { step: "ready"; buy: SimpleRate | null; sell: SimpleRate | null };
 
 /**
  * Fetches today's reference USDC↔BOB rate for the passive ticker shown in
- * Cuenta. Pure read-only lookup (getRampsQuote never moves money) — if it
- * fails or Bolivia isn't quotable right now, we just hide the ticker instead
- * of showing an error, since it's informational, not blocking.
+ * Cuenta. Pure read-only lookup (quoteRamp never moves money) — if it fails
+ * or Bolivia isn't quotable right now, we just hide the ticker instead of
+ * showing an error, since it's informational, not blocking.
+ *
+ * Rebuilt against the SDK's v3 ramps API (routes + quoteRamp), which
+ * replaced the old getRampCountries/getRampsQuote pair entirely — the v2
+ * endpoints they called were decommissioned, breaking this ticker for
+ * everyone until this rewrite.
  */
 export function useRampRate(enabled: boolean) {
   const { getClient } = usePollar();
@@ -29,35 +39,49 @@ export function useRampRate(enabled: boolean) {
     async function load() {
       try {
         const client = getClient();
-        const { countries } = await client.getRampCountries();
-        const bolivia = countries.find((c) => c.currency === "BOB");
-        if (!bolivia) {
-          if (!cancelled) setState({ step: "unavailable" });
-          return;
-        }
-
-        const [buyRes, sellRes] = await Promise.allSettled([
-          client.getRampsQuote({
-            country: bolivia.code,
-            amount: REFERENCE_BOB,
-            currency: "BOB",
-            direction: "onramp",
-          }),
-          client.getRampsQuote({
-            country: bolivia.code,
-            amount: REFERENCE_BOB,
-            currency: "BOB",
-            direction: "offramp",
-          }),
+        const [onrampRoutes, offrampRoutes] = await Promise.all([
+          client.getRampRoutes("ONRAMP"),
+          client.getRampRoutes("OFFRAMP"),
         ]);
 
-        const buy =
-          buyRes.status === "fulfilled"
-            ? buyRes.value.quotes.find((q) => q.recommended) ?? buyRes.value.quotes[0] ?? null
+        const onrampRoute = onrampRoutes.routes.find(
+          (r) => r.fiat.currency === "BOB" && r.asset.code === "USDC" && r.asset.chain === "STELLAR"
+        );
+        const offrampRoute = offrampRoutes.routes.find(
+          (r) => r.fiat.currency === "BOB" && r.asset.code === "USDC" && r.asset.chain === "STELLAR"
+        );
+
+        const [buyRes, sellRes] = await Promise.allSettled([
+          onrampRoute
+            ? client.quoteRamp({
+                direction: "ONRAMP",
+                fiat: onrampRoute.fiat,
+                asset: onrampRoute.asset,
+                amount: { value: REFERENCE_BOB, denomination: "in" },
+              })
+            : Promise.reject(new Error("no onramp route")),
+          offrampRoute
+            ? client.quoteRamp({
+                direction: "OFFRAMP",
+                fiat: offrampRoute.fiat,
+                asset: offrampRoute.asset,
+                amount: { value: REFERENCE_USDC, denomination: "in" },
+              })
+            : Promise.reject(new Error("no offramp route")),
+        ]);
+
+        // Buy = BOB -> USDC: rate is how many Bs one USDC costs (input BOB / output USDC).
+        const buyQuote = buyRes.status === "fulfilled" ? buyRes.value.quotes[0] : null;
+        const buy: SimpleRate | null =
+          buyQuote && Number(buyQuote.amountOut) > 0
+            ? { rate: Number(buyQuote.amountIn) / Number(buyQuote.amountOut) }
             : null;
-        const sell =
-          sellRes.status === "fulfilled"
-            ? sellRes.value.quotes.find((q) => q.recommended) ?? sellRes.value.quotes[0] ?? null
+
+        // Sell = USDC -> BOB: rate is how many Bs one USDC is worth (output BOB / input USDC).
+        const sellQuote = sellRes.status === "fulfilled" ? sellRes.value.quotes[0] : null;
+        const sell: SimpleRate | null =
+          sellQuote && Number(REFERENCE_USDC) > 0
+            ? { rate: Number(sellQuote.amountOut) / Number(REFERENCE_USDC) }
             : null;
 
         if (!cancelled) {
