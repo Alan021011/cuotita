@@ -8,34 +8,14 @@ import type { PoolWithTotal } from "@/lib/pools";
 /**
  * Desktop/web-mode skin for the home dashboard — only real data and the
  * actions that already exist (BalanceCard, PoolCard), laid out as a wide
- * panel instead of the mobile single-column shell. Scoped to a green
- * "treasury" palette via local CSS custom properties, so it doesn't affect
- * the blue theme used everywhere else (mobile, landing, claims…).
+ * panel instead of the mobile single-column shell. Uses the app's shared
+ * color tokens (same ones the mobile view and the landing use), so a theme
+ * change in one place updates every surface instead of needing to be kept
+ * in sync across several local color scopes.
  */
 export function WebDashboard({ pools, open }: { pools: PoolWithTotal[] | null; open: number }) {
   return (
-    <div
-      className="hidden min-h-screen flex-col lg:flex"
-      style={
-        {
-          "--background": "#0a120e",
-          "--foreground": "#eaf4ee",
-          "--primary": "#16a34a",
-          "--primary-hover": "#22c55e",
-          "--primary-dim": "#15803d",
-          "--primary-light": "color-mix(in srgb, #16a34a 14%, #0a120e)",
-          "--primary-foreground": "#ffffff",
-          "--surface": "#101d16",
-          "--surface-hover": "#15261c",
-          "--surface-raised": "#15261c",
-          "--border": "#223229",
-          "--muted": "#8fa295",
-          "--muted-light": "#5f7267",
-          backgroundColor: "var(--background)",
-          color: "var(--foreground)",
-        } as React.CSSProperties
-      }
-    >
+    <div className="hidden min-h-screen flex-col bg-background text-foreground lg:flex">
       <header className="border-b border-border px-8 py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <div className="flex items-center gap-3">
