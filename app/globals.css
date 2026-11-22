@@ -1,44 +1,45 @@
 @import "tailwindcss";
 
 /*
- * Cuotita design tokens — "Asfalto" system generated in Google Stitch
- * (project "Cuotita – Fondo de auxilio mutuo"). Night-shift delivery look:
- * warm dark asphalt surfaces, reflective-vest amber as the only accent.
+ * Cuotita design tokens — "Infraestructura" system, evolved from the
+ * original "Asfalto" (amber/asphalt, moto-courier-coded) palette.
+ * Deep navy surfaces, trustworthy blue as the only accent — reads as
+ * financial infrastructure for any collective fund, not just one trade.
  * Every color in the app derives from these.
  */
 :root {
   color-scheme: dark;
 
-  --background: #15130f;
-  --foreground: #f3ede2;
+  --background: #0b1120;
+  --foreground: #eef2ff;
 
-  --primary: #f59e0b;
-  --primary-hover: #fbbf24;
-  --primary-dim: #d97706;
-  --primary-light: color-mix(in srgb, #f59e0b 14%, #15130f);
-  --primary-foreground: #1a1200;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-dim: #2563eb;
+  --primary-light: color-mix(in srgb, #3b82f6 14%, #0b1120);
+  --primary-foreground: #ffffff;
 
   /* Cards sit on --surface; inputs/insets drop back to --background;
      raised chips and hover states use --surface-raised. */
-  --surface: #211d17;
-  --surface-hover: #2b261e;
-  --surface-raised: #2b261e;
-  --border: #3a3329;
+  --surface: #121a2e;
+  --surface-hover: #1a2440;
+  --surface-raised: #1a2440;
+  --border: #2a3657;
 
-  --muted: #aba192;
-  --muted-light: #7d766d;
+  --muted: #9aa5c4;
+  --muted-light: #6b7497;
 
   --error: #f87171;
-  --error-light: color-mix(in srgb, #f87171 12%, #15130f);
-  --error-border: color-mix(in srgb, #f87171 40%, #15130f);
+  --error-light: color-mix(in srgb, #f87171 12%, #0b1120);
+  --error-border: color-mix(in srgb, #f87171 40%, #0b1120);
 
   --success: #4ade80;
-  --success-light: color-mix(in srgb, #4ade80 12%, #15130f);
-  --success-border: color-mix(in srgb, #4ade80 40%, #15130f);
+  --success-light: color-mix(in srgb, #4ade80 12%, #0b1120);
+  --success-border: color-mix(in srgb, #4ade80 40%, #0b1120);
 
   --warning: #fbbf24;
-  --warning-light: color-mix(in srgb, #fbbf24 12%, #15130f);
-  --warning-border: color-mix(in srgb, #fbbf24 40%, #15130f);
+  --warning-light: color-mix(in srgb, #fbbf24 12%, #0b1120);
+  --warning-border: color-mix(in srgb, #fbbf24 40%, #0b1120);
 
   /* Mascot (polar bear): brand illustration colors. */
   --mascot: #ffffff;
