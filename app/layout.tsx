@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, IBM_Plex_Sans, IBM_Plex_Mono, Oswald } from "next/font/google";
+import { Bebas_Neue, IBM_Plex_Sans, IBM_Plex_Mono, Oswald, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { PollarAppProvider } from "@/lib/pollar";
 import "./globals.css";
 
@@ -28,6 +28,19 @@ const bebasNeue = Bebas_Neue({
   weight: "400",
 });
 
+// Institutional landing (Stitch "Solidarity & Prudence" design).
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+});
+
 export const metadata: Metadata = {
   title: "Cuotita",
   description: "Fondo de auxilio mutuo para motorepartidores, con Pollar",
@@ -38,7 +51,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       suppressHydrationWarning
-      className={`${plexSans.variable} ${plexMono.variable} ${bebasNeue.variable} ${oswald.variable} h-full antialiased overflow-y-scroll`}
+      className={`${plexSans.variable} ${plexMono.variable} ${bebasNeue.variable} ${oswald.variable} ${plusJakarta.variable} ${jetbrainsMono.variable} h-full antialiased overflow-y-scroll`}
     >
       <head>
         {/* Icon font used by the Stitch-generated designs (components/ui/Icon.tsx). */}
