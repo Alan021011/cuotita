@@ -1,45 +1,45 @@
 @import "tailwindcss";
 
 /*
- * Cuotita design tokens — "Infraestructura" system, evolved from the
- * original "Asfalto" (amber/asphalt, moto-courier-coded) palette.
- * Deep navy surfaces, trustworthy blue as the only accent — reads as
- * financial infrastructure for any collective fund, not just one trade.
+ * Cuotita design tokens — "Institucional" system, evolved from
+ * "Infraestructura" (dark navy + blue) to match the light, teal
+ * "Solidarity & Prudence" landing page — reads as financial
+ * infrastructure for any collective fund, not just one trade.
  * Every color in the app derives from these.
  */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  --background: #0b1120;
-  --foreground: #eef2ff;
+  --background: #f8f9ff;
+  --foreground: #0b1c30;
 
-  --primary: #3b82f6;
-  --primary-hover: #60a5fa;
-  --primary-dim: #2563eb;
-  --primary-light: color-mix(in srgb, #3b82f6 14%, #0b1120);
+  --primary: #005c55;
+  --primary-hover: #0f766e;
+  --primary-dim: #004440;
+  --primary-light: color-mix(in srgb, #005c55 10%, var(--background));
   --primary-foreground: #ffffff;
 
   /* Cards sit on --surface; inputs/insets drop back to --background;
      raised chips and hover states use --surface-raised. */
-  --surface: #121a2e;
-  --surface-hover: #1a2440;
-  --surface-raised: #1a2440;
-  --border: #2a3657;
+  --surface: #ffffff;
+  --surface-hover: #eff4ff;
+  --surface-raised: #eff4ff;
+  --border: #d3e4fe;
 
-  --muted: #9aa5c4;
-  --muted-light: #6b7497;
+  --muted: #3e4947;
+  --muted-light: #6e7977;
 
-  --error: #f87171;
-  --error-light: color-mix(in srgb, #f87171 12%, #0b1120);
-  --error-border: color-mix(in srgb, #f87171 40%, #0b1120);
+  --error: #ba1a1a;
+  --error-light: color-mix(in srgb, #ba1a1a 10%, var(--background));
+  --error-border: color-mix(in srgb, #ba1a1a 35%, var(--background));
 
-  --success: #4ade80;
-  --success-light: color-mix(in srgb, #4ade80 12%, #0b1120);
-  --success-border: color-mix(in srgb, #4ade80 40%, #0b1120);
+  --success: #0f766e;
+  --success-light: color-mix(in srgb, #0f766e 10%, var(--background));
+  --success-border: color-mix(in srgb, #0f766e 35%, var(--background));
 
-  --warning: #fbbf24;
-  --warning-light: color-mix(in srgb, #fbbf24 12%, #0b1120);
-  --warning-border: color-mix(in srgb, #fbbf24 40%, #0b1120);
+  --warning: #92600a;
+  --warning-light: color-mix(in srgb, #92600a 10%, var(--background));
+  --warning-border: color-mix(in srgb, #92600a 35%, var(--background));
 
   /* Mascot (polar bear): brand illustration colors. */
   --mascot: #ffffff;
@@ -47,7 +47,7 @@
   --mascot-shade: #cde4fa;
   --mascot-features: #0f2b46;
 
-  /* "Powered by Pollar" mark: near-white on asphalt. */
+  /* "Powered by Pollar" mark: dark on light institutional background. */
   --logo: var(--foreground);
 }
 
