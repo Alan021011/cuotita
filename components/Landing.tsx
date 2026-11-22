@@ -284,7 +284,7 @@ export function Landing({ login }: { login: () => void }) {
             <img src="/logo.png" alt="" className="h-9 w-9 object-contain" />
             <span className="flex flex-col">
               <span className={`${H} text-lg font-bold leading-none text-primary-hover`}>Cuotita</span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Auxilio mutuo motos</span>
+              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Fondos colectivos con reglas claras</span>
             </span>
           </a>
           <nav className="hidden items-center gap-4 lg:flex">
@@ -323,7 +323,7 @@ export function Landing({ login }: { login: () => void }) {
                 <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-success" />
               </span>
               <span className="text-[11px] font-semibold uppercase tracking-wider text-success">
-                Red solidaria de motorepartidores · Bolivia
+                Fondos colectivos con reglas claras · Bolivia
               </span>
             </div>
 
@@ -336,6 +336,9 @@ export function Landing({ login }: { login: () => void }) {
                 </h1>
                 <p className="max-w-2xl text-[17px] leading-relaxed text-muted">
                   Tu moto es tu herramienta de trabajo y no puede frenar. Un fondo colectivo entre repartidores para cubrir averías — pinchazos, frenos, pantallas rotas y choques leves — sin bancos, sin letra chica y aprobado por tus propios camaradas de ruta.
+                </p>
+                <p className="max-w-2xl text-[13px] leading-relaxed text-muted-light">
+                  Este es el primer grupo que construimos con Cuotita — el mismo motor sirve para cualquier organización que maneje dinero en común bajo reglas acordadas: gremios, cooperativas, juntas vecinales, asociaciones.
                 </p>
                 <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center">
                   <button
@@ -622,7 +625,7 @@ export function Landing({ login }: { login: () => void }) {
               <span className="h-2.5 w-2.5 rounded-full bg-success" /> Cuotita
             </p>
             <p className="text-[15px] leading-relaxed text-muted">
-              Fondo de auxilio mutuo, transparente, para motorepartidores de delivery en Bolivia.
+              Motor de fondos colectivos con reglas claras y pagos verificados on-chain. Primer grupo: motorepartidores de delivery en Bolivia.
             </p>
           </div>
           <div>
