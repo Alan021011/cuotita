@@ -101,12 +101,15 @@ body {
   font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
-/* Amber glow for highlighted cards (balance, fund hero) and the nav FAB. */
+/* Glow for highlighted cards (balance, fund hero) and the nav FAB — follows
+   whatever --primary is set to, so a scoped theme override (e.g. the
+   desktop dashboard's green skin) re-glows automatically. */
 .glow-amber {
-  box-shadow: 0 0 25px -5px rgb(245 158 11 / 0.15), inset 0 1px 0 rgb(245 158 11 / 0.25);
+  box-shadow: 0 0 25px -5px color-mix(in srgb, var(--primary) 15%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--primary) 25%, transparent);
 }
 .glow-fab {
-  box-shadow: 0 0 20px 2px rgb(245 158 11 / 0.35);
+  box-shadow: 0 0 20px 2px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
 /* Static dashed road marking used as a section divider. */
