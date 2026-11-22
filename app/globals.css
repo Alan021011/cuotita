@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /*
- * Cuotita design tokens — "Institucional" system, evolved from
- * "Infraestructura" (dark navy + blue) to match the light, teal
- * "Solidarity & Prudence" landing page — reads as financial
+ * Cuotita design tokens — "Institucional" system: light institutional
+ * layout (from the "Solidarity & Prudence" landing), with blue as the
+ * accent instead of that design's original teal — reads as financial
  * infrastructure for any collective fund, not just one trade.
  * Every color in the app derives from these.
  */
@@ -13,10 +13,10 @@
   --background: #f8f9ff;
   --foreground: #0b1c30;
 
-  --primary: #005c55;
-  --primary-hover: #0f766e;
-  --primary-dim: #004440;
-  --primary-light: color-mix(in srgb, #005c55 10%, var(--background));
+  --primary: #2563eb;
+  --primary-hover: #3b82f6;
+  --primary-dim: #1d4ed8;
+  --primary-light: color-mix(in srgb, #2563eb 10%, var(--background));
   --primary-foreground: #ffffff;
 
   /* Cards sit on --surface; inputs/insets drop back to --background;
@@ -26,16 +26,16 @@
   --surface-raised: #eff4ff;
   --border: #d3e4fe;
 
-  --muted: #3e4947;
-  --muted-light: #6e7977;
+  --muted: #475569;
+  --muted-light: #64748b;
 
   --error: #ba1a1a;
   --error-light: color-mix(in srgb, #ba1a1a 10%, var(--background));
   --error-border: color-mix(in srgb, #ba1a1a 35%, var(--background));
 
-  --success: #0f766e;
-  --success-light: color-mix(in srgb, #0f766e 10%, var(--background));
-  --success-border: color-mix(in srgb, #0f766e 35%, var(--background));
+  --success: #15803d;
+  --success-light: color-mix(in srgb, #15803d 10%, var(--background));
+  --success-border: color-mix(in srgb, #15803d 35%, var(--background));
 
   --warning: #92600a;
   --warning-light: color-mix(in srgb, #92600a 10%, var(--background));
